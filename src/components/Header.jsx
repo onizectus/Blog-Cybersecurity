@@ -14,7 +14,7 @@ function Header() {
             <Link to="/" className="nav-link">Home</Link>
             <Link to="/about" className="nav-link">Tentang</Link>
             <a 
-              href="https://github.com" 
+              href="https://github.com/onizectus" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="nav-link"
