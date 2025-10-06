@@ -1,4 +1,4 @@
-# 🛡️ Cybersecurity Lab Documentation by Lubellion
+#  Cybersecurity Lab Documentation by Lubellion
 
 Dokumentasi lab eksperimen penetration testing dan network sec## 📝 Menambah Lab Report Baru
 
@@ -40,7 +40,7 @@ Untuk menambah lab report baru, edit file `src/data/articles.js`:
 }
 ```
 
-## 👤 About Lubellion
+## About Lubellion
 
 Lubellion adalah cybersecurity researcher yang fokus pada:
 - Penetration Testing & Vulnerability Assessment
@@ -49,31 +49,31 @@ Lubellion adalah cybersecurity researcher yang fokus pada:
 - Security Research & Documentation
 
 **Contact:**
-- 📧 Email: lubellion@cybersec.lab
-- 💻 GitHub: github.com/lubellion
-- 💼 LinkedIn: linkedin.com/in/lubellion menggunakan React + Vite. Platform ini mendokumentasikan hasil penelitian dan eksperimen dalam bidang ethical hacking secara sistematis.
+-  Email: lubellion@cybersec.lab
+-  GitHub: github.com/lubellion
+-  LinkedIn: linkedin.com/in/lubellion menggunakan React + Vite. Platform ini mendokumentasikan hasil penelitian dan eksperimen dalam bidang ethical hacking secara sistematis.
 
 ![React](https://img.shields.io/badge/React-18.3.1-blue)
 ![Vite](https://img.shields.io/badge/Vite-5.4.1-purple)
 ![License](https://img.shields.io/badge/License-Educational-green)
 
-## 📋 Deskripsi
+##  Deskripsi
 
 Website dokumentasi ini berisi lab reports lengkap untuk:
-- � **Metasploitable 2 Penetration Testing** - Comprehensive exploitation dan vulnerability assessment
-- 🌐 **Nmap Network Scanning** - Advanced reconnaissance dan service detection techniques  
-- �️ **Snort IDS Implementation** - Intrusion detection system setup dan custom rule development
+-  **Metasploitable 2 Penetration Testing** - Comprehensive exploitation dan vulnerability assessment
+-  **Nmap Network Scanning** - Advanced reconnaissance dan service detection techniques  
+-  **Snort IDS Implementation** - Intrusion detection system setup dan custom rule development
 
-## ✨ Fitur Dokumentasi
+##  Fitur Dokumentasi
 
-- ✅ **Lab Report Format** - Dokumentasi sistematis dengan metodologi lengkap
-- ✅ **Experimenter Profile** - Informasi tentang Lubellion (researcher)
-- ✅ **Dark Theme** - Professional theme untuk technical documentation
-- ✅ **Markdown Rendering** - Format lab report dengan code blocks dan tables
-- ✅ **Search & Filter** - Cari lab reports dengan mudah
-- ✅ **Responsive Design** - Optimal di semua devices
+-  **Lab Report Format** - Dokumentasi sistematis dengan metodologi lengkap
+-  **Experimenter Profile** - Informasi tentang Lubellion (researcher)
+-  **Dark Theme** - Professional theme untuk technical documentation
+-  **Markdown Rendering** - Format lab report dengan code blocks dan tables
+-  **Search & Filter** - Cari lab reports dengan mudah
+-  **Responsive Design** - Optimal di semua devices
 
-## 🔬 Lab Experiments
+##  Lab Experiments
 
 ### 1. Metasploitable 2 Penetration Testing
 Dokumentasi lengkap eksperimen penetration testing meliputi:
@@ -98,7 +98,7 @@ Real-world intrusion detection system deployment:
 - Integration dengan analysis tools (Barnyard2, BASE, ELK)
 - Attack simulation dan validation testing
 
-## 🚀 Teknologi yang Digunakan
+##  Teknologi yang Digunakan
 
 - **React 18** - Modern UI library
 - **Vite** - Lightning-fast build tool
@@ -106,7 +106,7 @@ Real-world intrusion detection system deployment:
 - **React Markdown** - Markdown rendering untuk lab reports
 - **CSS3** - Custom styling dengan CSS variables
 
-## 📦 Instalasi
+##  Instalasi
 
 ### Prerequisites
 - Node.js (v16 atau lebih baru)
@@ -135,7 +135,7 @@ npm run dev
 http://localhost:5173
 \`\`\`
 
-## 🏗️ Struktur Project
+##  Struktur Project
 
 \`\`\`
 Blog Ethical Hacking/
@@ -182,7 +182,7 @@ Untuk menambah artikel baru, edit file \`src/data/articles.js\`:
 }
 \`\`\`
 
-## 🎨 Kustomisasi Theme
+##  Kustomisasi Theme
 
 Edit variabel CSS di \`src/index.css\`:
 
@@ -195,7 +195,7 @@ Edit variabel CSS di \`src/index.css\`:
 }
 \`\`\`
 
-## 📚 Topik Artikel yang Tersedia
+##  Topik Artikel yang Tersedia
 
 1. **Pengenalan Ethical Hacking** - Dasar-dasar ethical hacking
 2. **Reconnaissance** - Teknik information gathering
@@ -221,13 +221,13 @@ npm run build
 
 File production akan ada di folder \`dist/\`.
 
-## 🚀 Preview Production Build
+##  Preview Production Build
 
 \`\`\`bash
 npm run preview
 \`\`\`
 
-## 📖 Resources Tambahan
+##  Resources Tambahan
 
 - [OWASP](https://owasp.org) - Web Application Security
 - [Offensive Security](https://www.offensive-security.com) - OSCP Certification
@@ -235,11 +235,11 @@ npm run preview
 - [TryHackMe](https://tryhackme.com) - Learning Platform
 - [PortSwigger Academy](https://portswigger.net/web-security) - Free Training
 
-## 📄 License
+##  License
 
 Project ini dibuat untuk tujuan edukasi dalam mata kuliah Ethical Hacking.
 
-## 👨‍💻 Kontributor
+##  Kontributor
 
 Dibuat dengan ❤️ untuk pembelajaran ethical hacking
 
