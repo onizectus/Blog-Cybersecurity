@@ -1,0 +1,181 @@
+import        <h1 className="about-title">About the Experimenter</h1>
+        
+        <section className="about-section profile-section">
+          <div className="profile-header">
+            <div className="profile-avatar">🛡️</div>
+            <div className="profile-info">
+              <h2>Lubellion</h2>
+              <p className="profile-subtitle">Cybersecurity Researcher & Penetration Testing Enthusiast</p>
+            </div>
+          </div>
+          
+          <div className="profile-bio">
+            <h3>📋 Profile</h3>
+            <p>
+              Lubellion adalah seorang cybersecurity researcher yang fokus pada penetration testing, 
+              vulnerability assessment, dan network security. Dokumentasi lab ini merupakan bagian dari 
+              penelitian dan eksperimen dalam bidang ethical hacking dan keamanan sistem.
+            </p>
+            <p>
+              Dengan pengalaman di bidang network security dan web application security testing, 
+              Lubellion mencoba untuk mendokumentasikan eksperimen-eksperimen praktis yang dapat 
+              memberikan insight mendalam tentang cara kerja serangan siber dan bagaimana cara 
+              mempertahankan sistem dari ancaman tersebut.
+            </p>
+          </div>
+        </section>
+
+        <section className="about-section">
+          <h2>🎯 Tujuan Dokumentasi</h2>
+          <p>
+            Dokumentasi lab ini dibuat untuk mencatat eksperimen <strong>Ethical Hacking</strong> 
+            dan penetration testing secara sistematis. Setiap lab report berisi metodologi lengkap, 
+            hasil eksperimen, dan analisis mendalam untuk keperluan penelitian dan pembelajaran.
+          </p>
+        </section>css';
+
+function About() {
+  return (
+    <div className="about">
+      <div className="container">
+        <h1 className="about-title">About the Experimenter</h1>
+        
+        <section className="about-section">
+          <h2>🎯 Tujuan</h2>
+          <p>
+            Blog ini dibuat sebagai bagian dari mata kuliah <strong>Ethical Hacking</strong> 
+            untuk menyediakan sumber pembelajaran yang komprehensif tentang keamanan siber, 
+            penetration testing, dan praktik ethical hacking.
+          </p>
+        </section>
+
+        <section className="about-section">
+          <h2>� Lab Experiments</h2>
+          <div className="topics-grid">
+            <div className="topic-card">
+              <div className="topic-icon">�</div>
+              <h3>Metasploitable 2</h3>
+              <p>Comprehensive penetration testing pada vulnerable VM dengan exploitation dan post-exploitation techniques</p>
+            </div>
+            <div className="topic-card">
+              <div className="topic-icon">🌐</div>
+              <h3>Nmap Scanning</h3>
+              <p>Network reconnaissance, port scanning, service detection, dan vulnerability assessment</p>
+            </div>
+            <div className="topic-card">
+              <div className="topic-icon">�️</div>
+              <h3>Snort IDS</h3>
+              <p>Implementation intrusion detection system, custom rules, dan real-time threat monitoring</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-section">
+          <h2>💼 Technical Skills</h2>
+          <div className="skills-list">
+            <div className="skill-category">
+              <h3>Penetration Testing</h3>
+              <ul>
+                <li>Network Scanning & Reconnaissance</li>
+                <li>Vulnerability Assessment & Exploitation</li>
+                <li>Web Application Security Testing</li>
+                <li>Post-Exploitation & Privilege Escalation</li>
+              </ul>
+            </div>
+            <div className="skill-category">
+              <h3>Security Tools</h3>
+              <ul>
+                <li>Nmap, Metasploit Framework</li>
+                <li>Burp Suite, SQLMap, Wireshark</li>
+                <li>Snort IDS/IPS, Suricata</li>
+                <li>Kali Linux, Parrot OS</li>
+              </ul>
+            </div>
+            <div className="skill-category">
+              <h3>Technical Knowledge</h3>
+              <ul>
+                <li>Network Protocols & Architecture</li>
+                <li>Linux System Administration</li>
+                <li>Scripting (Python, Bash, PowerShell)</li>
+                <li>OWASP Top 10 & Web Technologies</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-section">
+          <h2>⚠️ Disclaimer</h2>
+          <div className="disclaimer-box">
+            <p>
+              <strong>PENTING:</strong> Semua informasi dan teknik yang dibagikan dalam blog ini 
+              adalah untuk <strong>tujuan edukasi</strong> dan <strong>penelitian legal</strong> saja.
+            </p>
+            <ul>
+              <li>Selalu dapatkan izin tertulis sebelum melakukan penetration testing</li>
+              <li>Jangan menggunakan teknik ini untuk aktivitas ilegal atau merugikan orang lain</li>
+              <li>Patuhi hukum dan regulasi yang berlaku di negara Anda</li>
+              <li>Gunakan pengetahuan ini untuk meningkatkan keamanan, bukan merusaknya</li>
+            </ul>
+            <p className="disclaimer-warning">
+              🚨 Penyalahgunaan informasi ini dapat mengakibatkan konsekuensi hukum serius!
+            </p>
+          </div>
+        </section>
+
+        <section className="about-section">
+          <h2>🛡️ Etika Ethical Hacker</h2>
+          <div className="ethics-list">
+            <div className="ethics-item">
+              <span className="ethics-icon">✅</span>
+              <div>
+                <h3>Lakukan:</h3>
+                <p>Dapatkan izin resmi, dokumentasikan semua aktivitas, laporkan kerentanan secara bertanggung jawab</p>
+              </div>
+            </div>
+            <div className="ethics-item">
+              <span className="ethics-icon">❌</span>
+              <div>
+                <h3>Jangan Lakukan:</h3>
+                <p>Akses sistem tanpa izin, merusak atau mencuri data, menyalahgunakan kerentanan untuk keuntungan pribadi</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="about-section">
+          <h2>🚀 Dokumentasi Tools</h2>
+          <div className="tech-stack">
+            <span className="tech-badge">React</span>
+            <span className="tech-badge">Vite</span>
+            <span className="tech-badge">React Router</span>
+            <span className="tech-badge">React Markdown</span>
+            <span className="tech-badge">CSS3</span>
+          </div>
+          <p style={{marginTop: '1rem', color: 'var(--text-secondary)'}}>Website ini dibangun dengan React untuk mendokumentasikan lab experiments dalam format yang mudah dibaca dan diakses.</p>
+        </section>
+
+        <section className="about-section">
+          <h2>📞 Connect & Resources</h2>
+          <div className="resources">
+            <p><strong>Contact Information:</strong></p>
+            <ul>
+              <li><strong>Email:</strong> lubellion@cybersec.lab</li>
+              <li><strong>GitHub:</strong> github.com/lubellion</li>
+              <li><strong>LinkedIn:</strong> linkedin.com/in/lubellion</li>
+            </ul>
+            <p style={{marginTop: '2rem'}}><strong>Useful Resources untuk Ethical Hacking:</strong></p>
+            <ul>
+              <li><a href="https://www.offensive-security.com" target="_blank" rel="noopener noreferrer">Offensive Security</a> - OSCP Certification</li>
+              <li><a href="https://owasp.org" target="_blank" rel="noopener noreferrer">OWASP</a> - Web Application Security</li>
+              <li><a href="https://www.hackthebox.com" target="_blank" rel="noopener noreferrer">HackTheBox</a> - Hands-on Practice</li>
+              <li><a href="https://tryhackme.com" target="_blank" rel="noopener noreferrer">TryHackMe</a> - Learning Platform</li>
+              <li><a href="https://portswigger.net/web-security" target="_blank" rel="noopener noreferrer">PortSwigger Academy</a> - Free Web Security Training</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+export default About;

